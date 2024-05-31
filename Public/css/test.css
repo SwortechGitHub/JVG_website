@@ -1,0 +1,219 @@
+:root{
+    --color-brand: #b50300;
+    --color-activeBrand: #df0400;
+    --color-secondary: #F5F5F5;
+    --color-tertiary: #373737;
+    --color-quaternary: #8d8d8d;
+    --height-nav: 80px;
+    --width-aside: 15%;
+}
+:target { scroll-margin-top: var(--height-nav); }
+*{
+    box-sizing: border-box;
+}
+body{
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    background-color: var(--color-secondary);
+}
+body *{
+    font-family: 'Poppins', sans-serif;
+}
+.Heading1{
+    text-align: center;
+    color: var(--color-tertiary);
+    font-size: 5vw;
+    font-weight: 100;
+    word-wrap: break-word"
+}
+section .Heading1{
+    margin: 50px 0;
+}
+section{
+    width: calc(100% - var(--width-aside));
+    position: absolute;
+    z-index: -1;
+    top: var(--height-nav);
+    right: 0;
+    margin: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+nav{
+    position: fixed;
+    width: 100%;
+    height: var(--height-nav);
+    left: 0px;
+    top: 0px;
+    background-color: var(--color-brand);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+nav #PagesLinks ul{
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+nav #PagesLinks li{
+    line-height: var(--height-nav);
+    padding: .5rem;
+    list-style: none;
+}
+nav #PagesLinks a{
+    display: block;
+}
+nav #PagesLinks li:hover{
+    background-color: var(--color-activeBrand);
+}
+#ToggleBotton{
+    position: absolute;
+    top: calc(var(--height-nav) / 3);
+    right: 1rem;
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 21px;
+}
+#ToggleBotton .bar{
+    height: 3px;
+    width: 100%;
+    background-color: var(--color-secondary);
+    border-radius: 10px;
+}
+section{
+    width: calc(100% - var(--width-aside))
+}
+#hr{
+    width: 100%;
+    height: 0px;
+    border: 1px #001427 solid;
+    margin: 10px 0;
+}
+.text{
+    width: 90%;
+    color: var(--color-tertiary);
+    font-size: clamp(0.6em, 4vw, 1.2em);
+    font-weight: 700;
+    word-wrap: break-word;
+}
+a{
+    text-decoration: none;
+    color: var(--color-secondary);
+    font-weight: 600;
+}
+aside{
+    padding: 1em;
+    position: fixed;
+    top: var(--height-nav);
+    width: var(--width-aside);
+}
+aside *{
+    color: var(--color-quaternary);
+}
+aside a:hover > *{
+    color: var(--color-brand);
+}
+aside a:hover li::before{
+    background-color: var(--color-brand);
+}
+aside a{
+    display: block;
+    padding: 1em;
+    text-decoration: none;
+    color: inherit;
+}
+.sidebar-list {
+    list-style: none; /* Remove default list styling */
+    padding: 0;       /* Remove default padding */
+    margin: 0;        /* Remove default margin */
+    position: relative;
+}
+.sidebar-list li {
+    position: relative;
+    padding-left: 2em;
+    margin-bottom: 0.25em;
+    display: flex;
+    align-items: center;
+}
+.sidebar-list li::before {/*aplis*/
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 1em;
+    height: 1em;
+    border-radius: 50%;
+    background-color: var(--color-quaternary);
+    z-index: 1;
+}
+.sidebar-list li:not(.last)::after {/*līnija*/
+    content: '';
+    position: absolute;
+    left: 0.4em;
+    top: 1em;
+    width: 3px;
+    height: calc(100% + 1.5em);
+    background-color: var(--color-quaternary);
+    z-index: 0;
+}
+.sidebar-list li a {
+    display: block;
+    padding: 0.5em 1em;
+    color: inherit;
+    width: 100%;
+}
+#LogoName *{
+    line-height: 0;
+    color: var(--color-secondary);
+}
+section img{
+    max-width: 100%;
+    height: auto;
+}
+#PagesLinks{
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+@media screen and (max-width: 750px) {
+    aside{
+        display: none;
+    }
+    #PagesLinks{
+        display: none;
+        width: 100%;
+    }
+    #ToggleBotton{
+        display: flex;
+    }
+    nav{
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    nav #PagesLinks ul{
+        background-color: var(--color-brand);
+        flex-direction: column;
+        width: 100%;
+        z-index: 1;
+    }
+    nav #PagesLinks li{
+        padding: 0;
+        text-align: center;
+    }
+    nav #PagesLinks.active{
+        display: flex;
+    }
+}
+#Logo{
+    display: flex;
+    align-items: center;
+}
+#Logo img{
+    height: calc(var(--height-nav) - 0.5em);
+}
