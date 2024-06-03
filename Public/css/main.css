@@ -17,7 +17,6 @@ body{
     width: 100vw;
     min-height: 100vh;
     background-color: var(--color-secondary);
-    overflow-x: hidden;
 }
 body *{
     font-family: 'Poppins', sans-serif;
@@ -27,6 +26,7 @@ body *{
     width: 100vw;
     padding-top: var(--height-nav);
     min-height: 100vh;
+    overflow-x: hidden;
 }
 section{
     position: relative;
@@ -60,8 +60,9 @@ nav{
     position: fixed;
     top: 0px;
     z-index: 1; /*Navigation bar always top*/
-    width: 100%;
+    width: 100vw;
     height: var(--height-nav);
+    padding: 0 1em;
 
     transition: top 0.2s;
 
