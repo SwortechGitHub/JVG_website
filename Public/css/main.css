@@ -11,12 +11,27 @@
 *{
     box-sizing: border-box;
 }
+/*------------lightbox scaling images------------*/
+.lb-container{
+    display: flex;
+    justify-content: center;
+}
+@media (orientation: landscape) {
+    .lb-outerContainer, .lb-container{height:80vh!important; width: auto!important;}
+    .lb-image{height:100%!important; width: auto!important;}
+}
+@media (orientation: portrait) {
+    .lb-outerContainer, .lb-container{width:90vw!important; height: auto!important;}
+    .lb-image{width:100%!important; height: auto!important;}
+}
+/*-----------------------------------------------*/
 body{
     margin: 0;
     padding: 0;
     width: 100vw;
     min-height: 100vh;
     background-color: var(--color-secondary);
+    overflow-x: hidden;
 }
 body *{
     font-family: 'Poppins', sans-serif;
@@ -26,7 +41,6 @@ body *{
     width: 100vw;
     padding-top: var(--height-nav);
     min-height: 100vh;
-    overflow-x: hidden;
 }
 section{
     position: relative;
@@ -40,12 +54,12 @@ section{
     align-items: center;
     flex-direction: column;
 }
-@media screen and (max-width: 750px) {
-    section{
-        width: 97%;
-    }
+@media screen and (max-width: 1090px) {/* max-width higher for content containers, because on tablets section squeezes aside*/
     aside{
         left: -100%;
+    }
+    section{
+        width: 97%;
     }
 }
 aside{
@@ -68,4 +82,7 @@ nav{
 
     background-color: var(--color-brand);
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+footer{
+    width: 100vw;
 }

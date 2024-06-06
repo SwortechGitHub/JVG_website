@@ -2,7 +2,7 @@
 <html lang="lv">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0"><!--minimum-scale=1.0 fixes overflow-x on phone devices-->
     <link href="lightbox2-2.11.4\dist\css\lightbox.min.css" rel="stylesheet" />
     <script src="lightbox2-2.11.4\dist\js\lightbox-plus-jquery.min.js"></script>
     <title>Test</title>
@@ -75,7 +75,6 @@
             <div id="hr"></div>
 <!--Video par skolu-->
             <div id="Video_par_skolu" class="Heading1">Video par skolu</div>
-            <iframe src="https://www.youtube.com/embed/eZtDANvDkHI?feature=oembed" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" width="500" height="281" frameborder="0"></iframe>
             <div id="hr"></div>
 
         </section>
@@ -89,6 +88,8 @@
         if (prevScrollpos > currentScrollPos) {
             document.getElementsByTagName("nav")[0].style.top = "0";
         } else {
+            /*Hides navbar links when scrolling down*/
+            document.getElementById("PagesLinks").classList.remove("active")
             document.getElementsByTagName("nav")[0].style.top = "-100px";
         }
         prevScrollpos = currentScrollPos;

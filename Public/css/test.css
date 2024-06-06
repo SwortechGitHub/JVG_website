@@ -157,6 +157,12 @@ section img{
     nav #PagesLinks.active{
         display: flex;
     }
+    footer{
+        flex-direction: column;
+    }
+    footer p{
+        text-align: center;
+    }
 }
 b{
     font-weight: 800;
