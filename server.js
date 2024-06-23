@@ -97,10 +97,6 @@ router.on("GET", "/macibas", (req, res) => {
 	renderAndCache(res, "macibasPage", "views/frame.ejs", "macibas");
 });
 
-router.on("GET", "/macibas", (req, res) => {
-	renderAndCache(res, "macibasPage", "views/frame.ejs", "macibas");
-});
-
 router.on("GET", "*", (req, res) => {
 	res.statusCode = 404;
 	renderAndCache(res, "404Page", "views/404.ejs", "404 - Page Not Found");
