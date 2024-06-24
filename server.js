@@ -1,4 +1,10 @@
-const findMyWay = require("find-my-way");
+const router = require("find-my-way")({
+	onBadUrl: (path, req, res) => {
+		res.statusCode = 400;
+		console.log(`Bad path: ${path}`);
+		renderAndCache(res, "404Page", "views/404.ejs", "404 - Page Not Found");
+	},
+});
 const http = require("http");
 const ejs = require("ejs");
 const NodeCache = require("node-cache");
@@ -10,9 +16,6 @@ const mime = require("mime-types");
 const {performance} = require("perf_hooks");
 var ms = 0;
 var requestCounter = 0;
-
-// Initialize the router
-const router = findMyWay();
 
 // Initialize the cache
 const cache = new NodeCache();
@@ -97,11 +100,6 @@ router.on("GET", "/macibas", (req, res) => {
 	renderAndCache(res, "macibasPage", "views/frame.ejs", "macibas");
 });
 
-router.on("GET", "*", (req, res) => {
-	res.statusCode = 404;
-	renderAndCache(res, "404Page", "views/404.ejs", "404 - Page Not Found");
-});
-
 // Create the HTTP server
 const port = process.env.PORT || 3000;
 http
@@ -111,5 +109,5 @@ http
 		serveStatic(staticFilePath)(req, res);
 	})
 	.listen(port, () => {
-		console.log(`Listen on ${port}`);
+		console.log(`Server listening on: http://localhost:${port}`);
 	});

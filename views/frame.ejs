@@ -3,12 +3,13 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, minimum-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <link rel="icon" type="image/x-icon" href="files\images\logo.png">
   <title>JVĢ</title>
   <!--SCRIPTS-->
   <script src="js\lightbox-plus-jquery.min.js"></script>
   <script defer src="js\index.js"></script>
+  <script src="https://kit.fontawesome.com/74e30751de.js" crossorigin="anonymous"></script>
   <!--STYLES-->
   <link href="css\lightbox.min.css" rel="stylesheet" />
   <link href="css\test.css" rel="stylesheet" />
@@ -18,48 +19,37 @@
 <body>
   <!--Navigācija-->
   <nav>
-    <div id="Logo">
+    <a id="Logo" href="/">
       <img src="files\images\logo.png" />
       <div id="LogoName">
         <h1>Jēkabpils</h1>
         <h3>Valsts ģimnāzija</h3>
       </div>
-    </div>
-    <a href="#" id="ToggleBotton">
-      <span class="bar"></span>
-      <span class="bar"></span>
-      <span class="bar"></span>
     </a>
-    <div id="PagesLinks">
-      <ul>
-        <li><a href="/parskolu">Par skolu</a></li>
-        <li><a href="/zinas">Ziņas</a></li>
-        <li><a href="/macibas">Mācībām</a></li>
-        <li><a href="#Vecākiem">Vecākiem</a>
-          <ul class="nav-list">
-            <li><a href="#1">1</a></li>
-            <li><a href="#2">2</a></li>
-            <li><a href="#3">3</a></li>
-          </ul>
-        </li>
-        <li><a href="#Skolēniem">Skolēniem</a>
-          <ul class="nav-list">
-            <li><a href="#ZNMO">ZNMO</a></li>
-            <li><a href="#Interešu_izglītība">Interešu izglītība</a></li>
-            <li><a href="#Projekti">Projekti</a></li>
-            <li><a href="#Žetonu_vakari">Žetonu vakari</a></li>
-            <li><a href="#Atbalsta_personāls">Atbalsta personāls</a></li>
-          </ul>
-        </li>
-        <li><a href="#Skolotājiem">Skolotājiem</a>
-          <ul class="nav-list">
-            <li><a href="#12">12</a></li>
-            <li><a href="#22">22</a></li>
-            <li><a href="#32">32</a></li>
-          </ul>
-        </li>
-      </ul>
-    </div>
+    <a href="#" id="ToggleBotton">
+      <i class="fa-solid fa-bars" style="font-size: 2em;"></i>
+    </a>
+    <ul id="PagesLinks">
+      <li><a href="/parskolu">Par skolu</a></li>
+      <li><a href="/zinas">Ziņas</a></li>
+      <li><a href="/macibas">Mācībām</a></li>
+      <li><a href="#Skolēniem">Skolēniem</a>
+        <ul class="nav-list">
+          <li><a href="#ZNMO">ZNMO</a></li>
+          <li><a href="#Interešu_izglītība">Interešu izglītība</a></li>
+          <li><a href="#Projekti">Projekti</a></li>
+          <li><a href="#Žetonu_vakari">Žetonu vakari</a></li>
+          <li><a href="#Atbalsta_personāls">Atbalsta personāls</a></li>
+        </ul>
+      </li>
+      <li><a href="#Skolotājiem">Skolotājiem</a>
+        <ul class="nav-list">
+          <li><a href="#Audzināšana">Audzināšana</a></li>
+          <li><a href="#Adminstrācija">Adminstrācija</a></li>
+          <li><a href="#Absolventi">Absolventi</a></li>
+        </ul>
+      </li>
+    </ul>
   </nav>
   <div id="content">
     <!--Saturs-->
@@ -127,8 +117,8 @@
     </div>
     <div>
       <h3 class="Heading2">Sociālie mēdiji</h3>
-      <a href="https://www.facebook.com/jekabpilsvg/" target="_blank"><i class="facebook"></i> Facebook</a>
-      <a href="https://twitter.com/JekabpilsVG" target="_blank"><i class="twitter"></i> Twitter</a>
+      <a href="https://www.facebook.com/jekabpilsvg/" target="_blank"><i class="fa-brands fa-facebook"></i> Facebook</a>
+      <a href="https://twitter.com/JekabpilsVG" target="_blank"><i class="fa-brands fa-twitter"></i> Twitter</a>
     </div>
   </footer>
 </body>

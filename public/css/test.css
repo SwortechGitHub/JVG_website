@@ -16,44 +16,6 @@ h2{
 section h1{
     margin: 20px 0;
 }
-nav #PagesLinks ul{
-    margin: 0;
-    padding: 0;
-    display: flex;
-}
-nav #PagesLinks > ul >li{
-    line-height: var(--height-nav);
-    height: calc(var(--height-nav) + .5rem);
-    padding: .5rem;
-    list-style: none;
-    overflow-y: hidden;
-}
-nav #PagesLinks li:has(.nav-list):hover{
-    height: auto;
-    overflow-y: none;
-}
-nav #PagesLinks a{
-    display: block;
-}
-nav #PagesLinks li:hover{
-    background-color: var(--color-activeBrand);
-}
-#ToggleBotton{
-    position: absolute;
-    top: calc(var(--height-nav) / 3);
-    right: 1rem;
-    display: none;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 30px;
-    height: 21px;
-}
-#ToggleBotton .bar{
-    height: 3px;
-    width: 100%;
-    background-color: var(--color-secondary);
-    border-radius: 10px;
-}
 #hr{
     width: 100%;
     height: 0px;
@@ -67,11 +29,16 @@ nav #PagesLinks li:hover{
     font-weight: 400;
     word-wrap: break-word;
 }
+section img{
+    max-width: 100%;
+    height: auto;
+}
 a{
     text-decoration: none;
     color: var(--color-secondary);
     font-weight: 600;
 }
+/*----------------------------Aside--------------------------------*/
 aside *{
     color: var(--color-quaternary);
 }
@@ -88,10 +55,11 @@ aside a{
     color: inherit;
     display: inline;
 }
+/*----------------------------Sidebar--------------------------------*/
 #Sidebar-list {
-    list-style: none; /* Remove default list styling */
-    padding: 0;       /* Remove default padding */
-    margin: 0;        /* Remove default margin */
+    list-style: none;
+    padding: 0;
+    margin: 0;
     position: relative;
 }
 #Sidebar-list li {
@@ -128,58 +96,84 @@ aside a{
     color: inherit;
     width: 100%;
 }
-section img{
-    max-width: 100%;
-    height: auto;
-}
-#PagesLinks{
-    float: right;
+/*--------------------------Nav------------------------------*/
+nav #PagesLinks {
+    position: absolute;
+    top: 0;
+    right: 30px;
     display: flex;
-    gap: 20px;
+    min-height: var(--height-nav);
     align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
-.nav-list li{
+nav #PagesLinks li {
     position: relative;
-    padding: none;
-    height: 50px;
-    line-height: 50px;
 }
-.nav-list li a{
+nav #PagesLinks ul.nav-list {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #333;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    min-width: 150px;
+}
+nav #PagesLinks li:hover > ul.nav-list {
     display: block;
-    height: 50px;
-    line-height: 50px;
-    text-decoration: none;
+}
+nav #PagesLinks a {
+    display: block;
     color: var(--color-secondary);
+    text-decoration: none;
+    line-height: var(--height-nav);
+    padding: 0px 10px;
 }
-.nav-list{
-    display: flex;
-    list-style-type: none;
+nav #PagesLinks a:hover {
+    background-color: var(--color-secondary);
+    color: var(--color-brand);
+}
+
+#ToggleBotton{
+    position: absolute;
+    top: calc(var(--height-nav) / 3);
+    right: 1rem;
+    display: none;
     flex-direction: column;
-    background-color: var(--color-activeBrand);
+    justify-content: space-between;
+    width: 30px;
+    height: 21px;
 }
-@media screen and (max-width: 750px) {
-    #PagesLinks{
-        display: none;
-        width: 100vw;
-    }
+#ToggleBotton .bar{
+    height: 3px;
+    width: 100%;
+    background-color: var(--color-secondary);
+    border-radius: 10px;
+}
+/*------------------------Mobile view------------------------------*/
+@media only screen and (max-width: 768px) {
     #ToggleBotton{
         display: flex;
     }
-    nav{
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    nav #PagesLinks ul{
+    nav #PagesLinks {
+        display: none;
         background-color: var(--color-brand);
         flex-direction: column;
-        width: 100%;
-        z-index: 1;
+        height: 100vh;
+        width: 100vw;
     }
     nav #PagesLinks li{
-        padding: 0;
-        text-align: center;
+        padding: 10px 10px;
+        width: 100vw;
     }
-    nav #PagesLinks.active{
+    nav #PagesLinks ul.nav-list {
+        position: static;
+        background-color: #444;
+    }
+    nav #PagesLinks.active {
         display: flex;
     }
     footer{
@@ -199,6 +193,7 @@ b{
     align-items: center;
     justify-content: center;
     height: 100%;
+    margin-left: 1em;
 }
 #Logo img{
     height: calc(var(--height-nav) - 2em);
@@ -209,7 +204,9 @@ b{
 }
 #LogoName h1{
     font-weight: 500;
+    font-size: 1.8em;
 }
 #LogoName h3{
     font-weight: 10;
+    font-size: 1em;
 }
