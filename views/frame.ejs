@@ -1,126 +1,60 @@
 <!DOCTYPE html>
 <html lang="lv">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <link rel="icon" type="image/x-icon" href="files\images\logo.png">
+  <link rel="icon" type="image/x-icon" href="files/images/logo.png">
   <title>JVĢ</title>
-  <!--SCRIPTS-->
-  <script src="js\lightbox-plus-jquery.min.js"></script>
-  <script defer src="js\index.js"></script>
+  <!-- SCRIPTS -->
+  <script defer src="js/index.js"></script>
   <script src="https://kit.fontawesome.com/74e30751de.js" crossorigin="anonymous"></script>
-  <!--STYLES-->
-  <link href="css\lightbox.min.css" rel="stylesheet" />
-  <link href="css\test.css" rel="stylesheet" />
-  <link href="css\main.css" rel="stylesheet" />
+  <!-- STYLES -->
+  <link href="css/main.css" rel="stylesheet" />
 </head>
-
 <body>
-  <!--Navigācija-->
-  <nav>
+  <header>
     <a id="Logo" href="/">
-      <img src="files\images\logo.png" />
+      <img src="files/images/logo.png" />
       <div id="LogoName">
-        <h1>Jēkabpils</h1>
+        <h2>Jēkabpils</h2>
         <h3>Valsts ģimnāzija</h3>
       </div>
     </a>
-    <a href="#" id="ToggleBotton">
-      <i class="fa-solid fa-bars" style="font-size: 2em;"></i>
-    </a>
-    <ul id="PagesLinks">
-      <li><a href="/parskolu">Par skolu</a></li>
-      <li><a href="/zinas">Ziņas</a></li>
-      <li><a href="/macibas">Mācībām</a></li>
-      <li><a href="#Skolēniem">Skolēniem</a>
-        <ul class="nav-list">
-          <li><a href="#ZNMO">ZNMO</a></li>
-          <li><a href="#Interešu_izglītība">Interešu izglītība</a></li>
-          <li><a href="#Projekti">Projekti</a></li>
-          <li><a href="#Žetonu_vakari">Žetonu vakari</a></li>
-          <li><a href="#Atbalsta_personāls">Atbalsta personāls</a></li>
-        </ul>
-      </li>
-      <li><a href="#Skolotājiem">Skolotājiem</a>
-        <ul class="nav-list">
-          <li><a href="#Audzināšana">Audzināšana</a></li>
-          <li><a href="#Adminstrācija">Adminstrācija</a></li>
-          <li><a href="#Absolventi">Absolventi</a></li>
-        </ul>
-      </li>
-    </ul>
-  </nav>
-  <div id="content">
-    <!--Saturs-->
-    <aside>
-      <h1 style="color: var(--color-quaternary);text-align: start;">Saturs</h1>
-      <ul id="Sidebar-list">
-        <!-- <a href="#Himna">
-          <li>Himna</li>
-        </a>
-        <a href="#Karogs">
-          <li>Karogs</li>
-        </a>
-        <a href="#Vēsture">
-          <li>Vēsture</li>
-        </a>
-        <a href="#Atmiņu_stāsti">
-          <li>Atmiņu stāsti</li>
-        </a>
-        <a href="#Absolventi">
-          <li>Absolventi</li>
-        </a>
-        <a href="#Gadagrāmata">
-          <li class="last">Gadagrāmata</li>
-        </a> -->
+    <a href="#" id="Menu" class="fa-solid fa-bars" style="font-size: 2em;"></a>
+    <nav>
+      <ul>
+        <li><a href="/parskolu">Par skolu</a></li>
+        <li><a href="/zinas">Ziņas</a></li>
+        <li><a href="/macibas">Mācībām</a></li>
       </ul>
-      <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const ul = document.getElementById('Sidebar-list');
-            const h1Elements = document.querySelectorAll('section h1');
-
-            h1Elements.forEach((h1, index) => {
-                const li = document.createElement('li');
-                if (index === h1Elements.length - 1) {
-                    li.className = 'last';
-                }
-                li.textContent = h1.textContent;
-
-                const a = document.createElement('a');
-                a.href = `#${h1.id}`;
-                a.appendChild(li);
-
-                ul.appendChild(a);
-            });
-
-            sidebar.appendChild(ul);
-        });
-    </script>
-    </aside>
-    <!--Informācija-->
-    <section>
-      <%- include(content)%>
-    </section>
+    </nav>
+  </header>
+  <div class="container">
+      <aside>
+        <h1>Saturs</h1>
+        <ul id="Sidebar-list">
+        </ul>
+      </aside>
+      <main>
+          <%- include (content)%>
+      </main>
   </div>
-  <!--Kājene-->
-  <footer style="display: flex; background-color: var(--color-brand); color: var(--color-secondary); justify-content: space-evenly;">
+  <footer>
     <div>
-      <h3 class="Heading2">Autortiesības</h3>
+      <h3>Autortiesības</h3>
       <p>&copy; 2024 web</p>
     </div>
     <div>
-      <h3 class="Heading2">Kontakt informācija</h3>
-      <p><i class="envelope"></i> Epasts: jvg@edu.jekabpils.lv</p>
-      <p><i class="btelephone"></i> Numurs: +371 65237551</p>
-      <p><i class="geo-alt"></i> Adrese: Rūdolfa Blaumaņa iela 27, Jēkabpils, Jēkabpils novads, LV-5201</p>
+      <h3>Kontakt informācija</h3>
+      <p><i class="fa fa-envelope"></i> Epasts: jvg@edu.jekabpils.lv</p>
+      <p><i class="fa fa-phone"></i> Numurs: +371 65237551</p>
+      <p><i class="fa fa-map-marker"></i> Adrese: Rūdolfa Blaumaņa iela 27, Jēkabpils, Jēkabpils novads, LV-5201</p>
     </div>
     <div>
-      <h3 class="Heading2">Sociālie mēdiji</h3>
+      <h3>Sociālie mēdiji</h3>
       <a href="https://www.facebook.com/jekabpilsvg/" target="_blank"><i class="fa-brands fa-facebook"></i> Facebook</a>
       <a href="https://twitter.com/JekabpilsVG" target="_blank"><i class="fa-brands fa-twitter"></i> Twitter</a>
     </div>
   </footer>
 </body>
-
 </html>

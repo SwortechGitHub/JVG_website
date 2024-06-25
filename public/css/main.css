@@ -1,87 +1,238 @@
-:root{
+:root {
     --color-brand: #b50300;
     --color-activeBrand: #df0400;
-    --color-secondary: #F5F5F5;
-    --color-tertiary: #373737;
-    --color-quaternary: #8d8d8d;
-    --height-nav: 80px;
-    --width-aside: 15%;
+    --color-white: #F5F5F5;
+    --color-dark: #373737;
+    --color-mid: #ababab;
+    --height-nav: 50px; 
 }
-:target { scroll-margin-top: var(--height-nav); }
-*{
-    box-sizing: border-box;
-}
-/*------------lightbox scaling images------------*/
-.lb-container{
-    display: flex;
-    justify-content: center;
-}
-@media (orientation: landscape) {
-    .lb-outerContainer, .lb-container{height:80vh!important; width: auto!important;}
-    .lb-image{height:100%!important; width: auto!important;}
-}
-@media (orientation: portrait) {
-    .lb-outerContainer, .lb-container{width:90vw!important; height: auto!important;}
-    .lb-image{width:100%!important; height: auto!important;}
-}
-/*-----------------------------------------------*/
-body{
+
+body, html {
     margin: 0;
     padding: 0;
-    width: 100vw;
-    min-height: 100vh;
-    background-color: var(--color-secondary);
-    overflow-x: hidden;
+    font-family: Arial, sans-serif;
+    background-color: var(--color-white);
 }
-body *{
-    font-family: 'Poppins', sans-serif;
-}
-#content{
-    position: relative;
-    width: 100vw;
-    padding-top: var(--height-nav);
-    min-height: 100vh;
-}
-section{
-    position: relative;
-    float: right;
-    width: 76%; /* width/container*100 */
 
-    transition: width 1s;
-
+header {
+    z-index: 1;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
-@media only screen and (max-width: 768px) {/* max-width higher for content containers, because on tablets section squeezes aside*/
-    aside{
-        left: -100%;
-    }
-    section{
-        width: 97%;
-    }
-}
-aside{
-    position: fixed;
-    float: left;
-    width: 21%; /* width/container*100 */
-}
-section, aside{
-    margin: 1.8%; /* margin/container*100 */
-}
-nav{
-    position: fixed;
-    top: 0px;
-    z-index: 1; /*Navigation bar always top*/
-    width: 100vw;
-    height: var(--height-nav);
-
-    transition: top 0.2s;
-
     background-color: var(--color-brand);
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    color: var(--color-white);
+    height: var(--height-nav);
+    padding: 10px 20px;
+    justify-content: space-between;
 }
-footer{
-    width: 100vw;
+
+a:not(#Logo):hover{
+    color: var(--color-brand);
+    background-color: var(--color-white);
+}
+
+hr {
+    border: none; /* Remove default border */
+    height: 2px; /* Set the height of the line */
+    background: var(--color-brand); /* Set the background color */
+    margin: 20px 0; /* Add some space above and below the line */
+}
+.fa-bars{
+    display: none;
+}
+
+nav ul {
+    display: flex;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+nav ul li {
+    margin-right: 10px;
+}
+
+nav ul li a {
+    display: block;
+    line-height: var(--height-nav);
+    color: var(--color-white);
+    text-decoration: none;
+    height: var(--height-nav);
+    padding: 5px;
+}
+
+nav ul li a:hover {
+    color: var(--color-activeBrand);
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+}
+
+aside {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    flex: 1;
+    background-color: var(--color-mid);
+    padding: 20px;
+    margin-right: 20px;
+    color: var(--color-white);
+}
+
+main {
+    flex: 4;
+    padding: 20px;
+    background-color: var(--color-white);
+}
+
+footer {
+    background-color: var(--color-dark);
+    color: var(--color-white);
+    text-align: center;
+    padding: 10px 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+#Menu{
+    width: 50%;
+    text-align: end;
+}
+
+#Logo{
+    display: flex;
+    text-decoration: none;
+    color: var(--color-white);
+    width: 50%;
+}
+
+#Logo img{
+    height: var(--height-nav);
+}
+
+#Logo h2{
+    font-weight: 400;
+    margin: 0;
+}
+
+#Logo h3{
+    font-weight: 10;
+    margin: 0;
+}
+
+/* Media query for tablets */
+@media (max-width: 768px) {
+    aside{
+        position: absolute;
+        transform: translateX(-100%);
+    }
+    nav{
+        display: none;
+    }
+    .fa-bars{
+        display: block;
+        color: var(--color-white);
+        text-decoration: none;
+        text-align: left;
+        padding: 10px 20px;
+    }
+    footer{
+        flex-direction: column;
+    }
+    nav.active{
+        display: block;
+        position: absolute; /* Position below the #Menu */
+        top: calc(var(--height-nav) + 20px); /* Position at the bottom of the #Menu */
+        left: 0;
+        background-color: var(--color-brand); /* Optional: add a background color */
+        width: 100%; /* Full width */
+        padding: 20px; /* Add some padding */
+    }
+    nav ul{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: 2em;
+        gap: 10px;
+    }
+    nav li, a{
+        display: block;
+        padding: 0;
+        width: 100vw;
+        text-align: center;
+    }
+}
+
+/* Aside Styles */
+aside * {
+    color: var(--color-white);
+}
+
+aside h1 {
+    text-align: start;
+  }
+  
+
+aside a:hover * {
+    color: var(--color-brand);
+}
+
+aside a:hover li::before {
+    background-color: var(--color-brand);
+}
+
+aside a {
+    display: block;
+    padding: 1em;
+    color: inherit;
+}
+
+/* Sidebar Styles */
+#Sidebar-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: relative;
+}
+
+#Sidebar-list li {
+    position: relative;
+    padding-left: 2em;
+    margin-bottom: 0.25em;
+    display: flex;
+    align-items: center;
+}
+
+#Sidebar-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 1em;
+    height: 1em;
+    border-radius: 50%;
+    background-color: var(--color-white);
+    z-index: 1;
+}
+
+#Sidebar-list li:hover::before {
+    background-color: var(--color-brand);
+}
+
+#Sidebar-list li:not(.last)::after {
+    content: '';
+    position: absolute;
+    left: 0.4em;
+    top: 1em;
+    width: 3px;
+    height: calc(100% + 1.5em);
+    background-color: var(--color-white);
+    z-index: 0;
+}
+
+#Sidebar-list li a {
+    display: block;
+    padding: 0.5em 1em;
+    color: inherit;
+    width: 100%;
 }
