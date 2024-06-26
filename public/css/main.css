@@ -1,6 +1,6 @@
 :root {
     --color-brand: #b50300;
-    --color-activeBrand: #df0400;
+    --color-activeBrand: #ffa4a3;
     --color-white: #F5F5F5;
     --color-dark: #373737;
     --color-mid: #ababab;
@@ -24,7 +24,7 @@ header {
     justify-content: space-between;
 }
 
-a:not(#Logo):hover{
+header a:not(#Logo):hover{
     color: var(--color-brand);
     background-color: var(--color-white);
 }
@@ -66,17 +66,15 @@ nav ul li a:hover {
 .container {
     display: flex;
     justify-content: space-between;
-    min-height: 35vh;
+    min-height: 40vh;
 }
 
 aside {
-    position: sticky;
+    position: sticky;/*Doesnt work*/
     top: 0;
-    height: 100vh;
     flex: 1;
     background-color: var(--color-mid);
     padding: 20px;
-    margin-right: 20px;
     color: var(--color-white);
 }
 
@@ -85,6 +83,19 @@ main {
     padding: 20px;
     width: 90%;
     background-color: var(--color-white);
+}
+
+main a{
+    color: var(--color-brand);
+    width: 100%;
+    text-decoration: none;
+}
+main a:hover, main a:focus{
+    color: var(--color-activeBrand);
+}
+
+main a:active{
+    color: var(--color-dark);
 }
 
 footer {
@@ -97,15 +108,22 @@ footer {
     display: flex;
     justify-content: space-evenly;
 }
+footer a{
+    color: var(--color-white);
+    text-decoration: none;
+}
 
 #Menu{
     text-align: end;
+    width: auto;
+    border-radius: 10px;
 }
 
 #Logo{
     display: flex;
     text-decoration: none;
     color: var(--color-white);
+    width: 200px;
 }
 
 #Logo img{
@@ -147,7 +165,7 @@ footer {
         top: calc(var(--height-nav) + 20px); /* Position at the bottom of the #Menu */
         left: 0;
         background-color: var(--color-brand); /* Optional: add a background color */
-        width: 100%; /* Full width */
+        width: calc(100vw - 40px);
         padding: 20px; /* Add some padding */
     }
     nav ul{
@@ -157,17 +175,11 @@ footer {
         font-size: 2em;
         gap: 10px;
     }
-    nav li, a{
+    nav li, nav a{
         display: block;
         padding: 0;
-        width: 100vw;
+        width: 100%;
         text-align: center;
-    }
-    #Logo{
-        width: 95%;
-    }
-    #Menu{
-        width: 5%;
     }
 }
 
@@ -177,7 +189,10 @@ aside * {
 }
 
 aside h1 {
-    text-align: start;
+    text-align: center;
+    font-weight: 700;
+    font-size: 2em;
+    padding: 0;
   }
   
 
@@ -193,6 +208,7 @@ aside a {
     display: block;
     padding: 1em;
     color: inherit;
+    text-decoration: none;
 }
 
 /* Sidebar Styles */
@@ -222,7 +238,7 @@ aside a {
     z-index: 1;
 }
 
-#Sidebar-list li:hover::before {
+#Sidebar-list a:hover li::before {
     background-color: var(--color-brand);
 }
 
@@ -242,4 +258,14 @@ aside a {
     padding: 0.5em 1em;
     color: inherit;
     width: 100%;
+}
+
+table, th, td {
+    border: 1px solid var(--color-dark);
+    border-collapse: collapse;
+    text-align: center;
+  }
+table thead{
+    background-color: var(--color-dark);
+    color: var(--color-white);
 }
