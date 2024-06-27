@@ -3,7 +3,7 @@
     --color-activeBrand: #ffa4a3;
     --color-white: #F5F5F5;
     --color-dark: #373737;
-    --color-mid: #ababab;
+    --color-mid: #a9a9a9;
     --height-nav: 50px; 
 }
 
@@ -70,9 +70,8 @@ aside {
     position: sticky;/*Doesnt work*/
     top: 0;
     flex: 1;
-    background-color: var(--color-mid);
+    background-color: var(--color-white);
     padding: 20px;
-    color: var(--color-white);
     height: 100vh;
     overflow-y: auto;
 }
@@ -197,7 +196,7 @@ footer a{
 
 /* Aside Styles */
 aside * {
-    color: var(--color-white);
+    color: var(--color-mid);
 }
 
 aside h1 {
@@ -246,7 +245,7 @@ aside a {
     width: 1em;
     height: 1em;
     border-radius: 50%;
-    background-color: var(--color-white);
+    background-color: var(--color-mid);
     z-index: 1;
 }
 
@@ -261,7 +260,7 @@ aside a {
     top: 1em;
     width: 3px;
     height: calc(100% + 1.5em);
-    background-color: var(--color-white);
+    background-color: var(--color-mid);
     z-index: 0;
 }
 
