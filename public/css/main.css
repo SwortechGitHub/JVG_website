@@ -12,7 +12,6 @@ body, html {
     padding: 0;
     font-family: Arial, sans-serif;
     background-color: var(--color-white);
-    overflow-x: hidden;
 }
 header {
     z-index: 1;
@@ -65,8 +64,6 @@ nav ul li a:hover {
 
 .container {
     display: flex;
-    justify-content: space-between;
-    min-height: 40vh;
 }
 
 aside {
@@ -76,6 +73,8 @@ aside {
     background-color: var(--color-mid);
     padding: 20px;
     color: var(--color-white);
+    height: 100vh;
+    overflow-y: auto;
 }
 
 main {
@@ -97,6 +96,9 @@ main a:hover, main a:focus{
 main a:active{
     color: var(--color-dark);
 }
+main article h2{
+    text-align: center;
+}
 
 footer {
     bottom: 0;
@@ -117,6 +119,7 @@ footer a{
     text-align: end;
     width: auto;
     border-radius: 10px;
+    color: var(--color-white);
 }
 
 #Logo{
@@ -180,6 +183,15 @@ footer a{
         padding: 0;
         width: 100%;
         text-align: center;
+    }
+    main article{
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+    }
+    main table{
+        transform: translateX(-20px);
+        width: 100vw;
     }
 }
 
