@@ -100,6 +100,14 @@ router.on("GET", "/macibas", (req, res) => {
 	renderAndCache(res, "macibasPage", "views/frame.ejs", "macibas");
 });
 
+router.on("GET", "/darbinieki", (req, res) => {
+	renderAndCache(res, "darbiniekiPage", "views/frame.ejs", "darbinieki");
+});
+
+router.on("GET", "/skoleniem", (req, res) => {
+	renderAndCache(res, "skoleniemPage", "views/frame.ejs", "skoleniem");
+});
+
 // Create the HTTP server
 const port = process.env.PORT || 3000;
 http

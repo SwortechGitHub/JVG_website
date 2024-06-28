@@ -188,9 +188,11 @@ footer a{
         justify-content: center;
         flex-direction: column;
     }
-    main table{
-        transform: translateX(-20px);
+    main article table{
         width: 100vw;
+    }
+    main article:has(table){
+        overflow-x: scroll;
     }
 }
 
