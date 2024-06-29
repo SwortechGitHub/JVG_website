@@ -38,6 +38,10 @@ hr {
     display: none;
 }
 
+nav{
+    z-index: 1;
+}
+
 nav ul {
     display: flex;
     list-style-type: none;
