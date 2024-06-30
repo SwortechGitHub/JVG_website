@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="lv">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
@@ -8,13 +9,15 @@
   <!-- SCRIPTS -->
   <script defer src="js/index.js"></script>
   <script src="https://kit.fontawesome.com/74e30751de.js" crossorigin="anonymous"></script>
+  <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
   <!-- STYLES -->
   <link href="css/main.css" rel="stylesheet" />
 </head>
+
 <body>
   <header>
     <a id="Logo" href="/">
-      <img src="files/images/logo.png" />
+      <img src="files/images/logo.webp" />
       <div id="LogoName">
         <h2>Jēkabpils</h2>
         <h3>Valsts ģimnāzija</h3>
@@ -32,14 +35,14 @@
     </nav>
   </header>
   <div class="container">
-      <aside>
-        <h1>Saturs</h1>
-        <ul id="Sidebar-list">
-        </ul>
-      </aside>
-      <main>
-          <%- include (content)%>
-      </main>
+    <aside>
+      <h1>Saturs</h1>
+      <ul id="Sidebar-list">
+      </ul>
+    </aside>
+    <main>
+      <%- include (content)%>
+    </main>
   </div>
   <footer>
     <div>
@@ -50,13 +53,14 @@
       <h3>Kontakt informācija</h3>
       <p><i class="fa fa-envelope"></i> Epasts: jvg@edu.jekabpils.lv</p>
       <p><i class="fa fa-phone"></i> Numurs: +371 65237551</p>
-      <p><i class="fa fa-map-marker"></i> Adrese: Rūdolfa Blaumaņa iela 27, Jēkabpils, Jēkabpils novads, LV-5201</p>
+      <a target="_blank" href="https://maps.app.goo.gl/1eHQD7EJnqK95EgXA"><i class="fa fa-map-marker"></i> Adrese: Rūdolfa Blaumaņa iela 27, Jēkabpils, Jēkabpils novads, LV-5201</a>
     </div>
     <div>
       <h3>Sociālie mēdiji</h3>
-      <a href="https://www.facebook.com/jekabpilsvg/" target="_blank"><i class="fa-brands fa-facebook"></i> Facebook</a>
-      <a href="https://twitter.com/JekabpilsVG" target="_blank"><i class="fa-brands fa-twitter"></i> Twitter</a>
+      <a target="_blank" href="https://www.facebook.com/jekabpilsvg/"><i class="fa-brands fa-facebook"></i> Facebook</a>
+      <a target="_blank" href="https://twitter.com/JekabpilsVG"><i class="fa-brands fa-twitter"></i> Twitter</a>
     </div>
   </footer>
 </body>
+
 </html>

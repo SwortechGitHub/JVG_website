@@ -81,7 +81,7 @@ aside {
 }
 
 main {
-    flex: 4;
+    flex: 6;
     padding: 20px;
     width: 90%;
     background-color: var(--color-white);
@@ -195,7 +195,7 @@ footer a{
     main article table{
         width: 100vw;
     }
-    main article:has(table){
+    main article div:has(table){
         overflow-x: scroll;
     }
 }
