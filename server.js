@@ -1,46 +1,35 @@
-const router = require("find-my-way")({
-	onBadUrl: (path, req, res) => {
-		res.statusCode = 400;
-		console.log(`Bad path: ${path}`);
-		renderAndCache(res, "404Page", "views/404.ejs", "404 - Page Not Found");
-	},
-});
+const router = require("find-my-way")();
 const http = require("http");
 const ejs = require("ejs");
 const NodeCache = require("node-cache");
-const fastJsonStringify = require("fast-json-stringify");
 const path = require("path");
 const fs = require("fs");
 const mime = require("mime-types");
-// Testing
-const {performance} = require("perf_hooks");
-var ms = 0;
-var requestCounter = 0;
 
 // Initialize the cache
 const cache = new NodeCache();
 
-// Define a schema for JSON stringification
-const stringify = fastJsonStringify({
-	type: "object",
-	properties: {hello: {type: "string"}},
-});
+// Request counter
+const requestCounter = {
+	homePage: 0,
+	parskoluPage: 0,
+	zinasPage: 0,
+	macibasPage: 0,
+	darbiniekiPage: 0,
+	skoleniemPage: 0,
+};
 
 // Function to handle rendering and caching
 const renderAndCache = (res, cacheKey, templatePath, content) => {
-	// Testing Start
-	const start = performance.now();
-
 	const cachedHtml = cache.get(cacheKey);
 
 	if (cachedHtml) {
 		// Serve cached page
 		res.setHeader("Content-Type", "text/html");
-		// Testing End
-		const end = performance.now();
-		ms += end - start;
-		requestCounter++;
-		console.log(`cacheKey: ${cacheKey}, ms avg ${ms / requestCounter}`);
+		requestCounter[cacheKey]++;
+		console.log(
+			`cacheKey: ${cacheKey}, requestCounter: ${requestCounter[cacheKey]}`,
+		);
 		res.end(cachedHtml);
 	} else {
 		// Render page and cache it
@@ -51,14 +40,9 @@ const renderAndCache = (res, cacheKey, templatePath, content) => {
 			} else {
 				cache.set(cacheKey, str);
 				res.setHeader("Content-Type", "text/html");
-				//Testing End
-				const end = performance.now();
-				ms += end - start;
-				requestCounter++;
+				requestCounter[cacheKey]++;
 				console.log(
-					`cacheKey: ${cacheKey}, ms avg: ${
-						ms / requestCounter
-					}, requestCounter: ${requestCounter}, ms sum: ${ms}`,
+					`cacheKey: ${cacheKey}, requestCounter: ${requestCounter[cacheKey]}`,
 				);
 				res.end(str);
 			}
@@ -106,6 +90,24 @@ router.on("GET", "/darbinieki", (req, res) => {
 
 router.on("GET", "/skoleniem", (req, res) => {
 	renderAndCache(res, "skoleniemPage", "views/frame.ejs", "skoleniem");
+});
+
+// router.on("GET", "/admin", (req, res) => {
+// 	ejs.renderFile("views/admin.ejs", {content: "admin"}, {}, (err, str) => {
+// 		if (err) {
+// 			res.statusCode = 500;
+// 			res.end(`Error rendering EJS: ${err}`);
+// 		} else {
+// 			res.setHeader("Content-Type", "text/html");
+// 			res.end(str);
+// 		}
+// 	});
+// });
+
+// Catch-all route for 404
+router.on("GET", "*", (req, res) => {
+	res.statusCode = 404;
+	renderAndCache(res, "404Page", "views/frame.ejs", "404");
 });
 
 // Create the HTTP server
