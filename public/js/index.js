@@ -22,3 +22,19 @@ document.addEventListener("DOMContentLoaded", function () {
 		ul.appendChild(a);
 	});
 });
+
+/*Active link*/
+document.addEventListener("DOMContentLoaded", function () {
+	// Get the current page URL
+	const currentPage = window.location.pathname.split("/").pop();
+
+	// Get all navigation links
+	const navLinks = document.querySelectorAll("nav li a");
+
+	// Loop through each link and add the 'active' class if it matches the current page
+	navLinks.forEach((link) => {
+		if (link.getAttribute("data-page") === currentPage) {
+			link.classList.add("active");
+		}
+	});
+});

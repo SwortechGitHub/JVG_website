@@ -10,6 +10,19 @@
   <script defer src="js/index.js"></script>
   <script src="https://kit.fontawesome.com/74e30751de.js" crossorigin="anonymous"></script>
   <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Lightbox CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
+  <!-- Lightbox JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+  <script>
+    lightbox.option({
+      'resizeDuration': 200,
+      'wrapAround': true,
+      'disableScrolling': true
+    })
+  </script>
   <!-- STYLES -->
   <link href="css/main.css" rel="stylesheet" />
 </head>
@@ -26,11 +39,11 @@
     <a href="#" id="Menu" class="fa-solid fa-bars" style="font-size: 2em;"></a>
     <nav>
       <ul>
-        <li><a href="/parskolu">Par skolu</a></li>
-        <li><a href="/zinas">Ziņas</a></li>
-        <li><a href="/macibas">Mācībām</a></li>
-        <li><a href="/darbinieki">Darbinieki</a></li>
-        <li><a href="/skoleniem">Skolēniem</a></li>
+        <li><a href="/parskolu" data-page="parskolu">Par skolu</a></li>
+        <li><a href="/zinas" data-page="zinas">Ziņas</a></li>
+        <li><a href="/macibas" data-page="macibas">Mācībām</a></li>
+        <li><a href="/darbinieki" data-page="darbinieki">Darbinieki</a></li>
+        <li><a href="/skoleniem" data-page="skoleniem">Skolēniem</a></li>
       </ul>
     </nav>
   </header>
@@ -47,7 +60,7 @@
   <footer>
     <div>
       <h3>Autortiesības</h3>
-      <p>&copy; 2024 web</p>
+      <p>&copy; 2024</p>
     </div>
     <div>
       <h3>Kontakt informācija</h3>
