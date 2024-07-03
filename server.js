@@ -26,10 +26,6 @@ const renderAndCache = (res, cacheKey, templatePath, content) => {
 	if (cachedHtml) {
 		// Serve cached page
 		res.setHeader("Content-Type", "text/html");
-		requestCounter[cacheKey]++;
-		console.log(
-			`cacheKey: ${cacheKey}, requestCounter: ${requestCounter[cacheKey]}`,
-		);
 		res.end(cachedHtml);
 	} else {
 		// Render page and cache it
@@ -40,10 +36,6 @@ const renderAndCache = (res, cacheKey, templatePath, content) => {
 			} else {
 				cache.set(cacheKey, str);
 				res.setHeader("Content-Type", "text/html");
-				requestCounter[cacheKey]++;
-				console.log(
-					`cacheKey: ${cacheKey}, requestCounter: ${requestCounter[cacheKey]}`,
-				);
 				res.end(str);
 			}
 		});
@@ -107,7 +99,8 @@ router.on("GET", "/skoleniem", (req, res) => {
 // Catch-all route for 404
 router.on("GET", "*", (req, res) => {
 	res.statusCode = 404;
-	renderAndCache(res, "404Page", "views/frame.ejs", "404");
+	console.log(req.url);
+	renderAndCache(res, "404", "views/frame.ejs", "404");
 });
 
 // Create the HTTP server
