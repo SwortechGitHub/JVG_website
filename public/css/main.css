@@ -4,53 +4,85 @@
     --color-white: #F5F5F5;
     --color-dark: #373737;
     --color-mid: #a9a9a9;
-    --height-nav: 50px; 
+    --height-nav: 50px;
 }
 
 body, html {
+    font-family: Arial, sans-serif;
+    background: var(--color-white);
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
-    background-color: var(--color-white);
 }
-header {
-    z-index: 1;
+
+header, nav ul, .container, footer, #Logo, #Sidebar-list li {
     display: flex;
-    background-color: var(--color-brand);
+}
+
+nav ul, #Logo h2, #Logo h3, #Sidebar-list {
+    margin: 0;
+    padding: 0;
+}
+
+header, aside a:hover li::before, #Sidebar-list a:hover li::before {
+    background: var(--color-brand);
+}
+
+header #menu:hover, nav ul li a:hover, main a, aside a:hover * {
+    color: var(--color-brand);
+}
+
+header, nav ul li a, footer, footer a, #Menu, #Logo, table thead {
     color: var(--color-white);
+}
+
+footer, table thead {
+    background: var(--color-dark);
+}
+
+a {
+    text-decoration: none;
+}
+
+main article h2, footer, aside h1, table, th, td {
+    text-align: center;
+}
+
+nav ul {
+    list-style: none;
+}
+
+header, nav, #Sidebar-list li::before {
+    z-index: 1;
+}
+
+.fa-solid {
+    display: none;
+}
+
+nav ul li a, aside a, #Sidebar-list li a {
+    display: block;
+}
+
+main a, footer, #Sidebar-list li a {
+    width: 100%;
+}
+
+header {
+    box-shadow: inset 0 -10px 10px -5px rgba(0, 0, 0, 0.15);
     height: var(--height-nav);
     padding: 10px 20px;
     justify-content: space-between;
 }
 
-header #menu:hover{
-    color: var(--color-brand);
-    background-color: var(--color-white);
-}
-
-.center{
-    text-align: center;
+header #menu:hover {
+    background: var(--color-white);
 }
 
 hr {
-    border: none; /* Remove default border */
-    height: 2px; /* Set the height of the line */
-    background: var(--color-brand); /* Set the background color */
-    margin: 20px 0; /* Add some space above and below the line */
-}
-.fa-bars{
-    display: none;
-}
-
-nav{
-    z-index: 1;
-}
-
-nav ul {
-    display: flex;
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
+    border: 0;
+    height: 2px;
+    background: var(--color-brand);
+    margin: 20px 0;
 }
 
 nav ul li {
@@ -58,17 +90,14 @@ nav ul li {
 }
 
 nav ul li a {
-    display: block;
     line-height: var(--height-nav);
-    color: var(--color-white);
-    text-decoration: none;
     height: var(--height-nav);
     padding: 5px;
 }
 
 @media (min-width: 768px) {
-    nav ul li a.active{
-        background-color: var(--color-white);
+    nav ul li a.active {
+        background: var(--color-white);
         color: var(--color-brand);
         border-radius: 5px 5px 0 0;
     }
@@ -78,20 +107,15 @@ nav ul li a {
 }
 
 nav ul li a:hover {
-    color: var(--color-brand);
     border-radius: 5px 5px 0 0;
-    background-color: var(--color-white);
-}
-
-.container {
-    display: flex;
+    background: var(--color-white);
 }
 
 aside {
-    position: sticky;/*Doesnt work*/
+    position: sticky;
     top: 0;
     flex: 1;
-    background-color: var(--color-white);
+    background: var(--color-white);
     padding: 20px;
     height: 100vh;
     overflow-y: auto;
@@ -101,163 +125,131 @@ main {
     flex: 5;
     padding: 20px;
     width: 90%;
-    background-color: var(--color-white);
+    background: var(--color-white);
 }
 
-main a{
-    color: var(--color-brand);
-    width: 100%;
-    text-decoration: none;
-}
-main a:hover, main a:focus{
+main a:hover, main a:focus {
     color: var(--color-activeBrand);
 }
 
-main a:active{
+main a:active {
     color: var(--color-dark);
-}
-main article h2{
-    text-align: center;
 }
 
 footer {
     bottom: 0;
-    background-color: var(--color-dark);
-    color: var(--color-white);
-    text-align: center;
     padding: 10px 0;
-    width: 100%;
-    display: flex;
     justify-content: space-evenly;
 }
-footer a{
-    color: var(--color-white);
-    text-decoration: none;
-}
 
-#Menu{
+#Menu {
     text-align: end;
     width: auto;
     border-radius: 10px;
-    color: var(--color-white);
 }
 
-#Logo{
-    display: flex;
-    text-decoration: none;
-    color: var(--color-white);
+#Logo {
     width: 200px;
 }
 
-#Logo img{
+#Logo img {
     height: var(--height-nav);
 }
 
-#Logo h2{
+#Logo h2 {
     font-weight: 400;
-    margin: 0;
 }
 
-#Logo h3{
+#Logo h3 {
     font-weight: 10;
-    margin: 0;
 }
 
-/* Media query for tablets */
 @media (max-width: 768px) {
-    aside{
+    aside {
         position: absolute;
         transform: translateX(-100%);
     }
-    nav{
+    nav {
         display: none;
     }
-    .fa-bars{
+    .fa-solid {
         display: block;
         color: var(--color-white);
-        text-decoration: none;
         text-align: left;
         padding: 10px 20px;
     }
-    footer{
+    footer {
         flex-direction: column;
     }
-    nav.active{
+    nav.active {
         display: block;
-        position: absolute; /* Position below the #Menu */
-        top: calc(var(--height-nav) + 20px); /* Position at the bottom of the #Menu */
+        position: absolute;
+        top: calc(var(--height-nav) + 20px);
         left: 0;
-        background-color: var(--color-brand); /* Optional: add a background color */
+        background: var(--color-brand);
         width: calc(100vw - 40px);
-        padding: 20px; /* Add some padding */
+        padding: 20px;
     }
-    nav ul{
+    nav ul {
         display: flex;
         flex-direction: column;
         align-items: center;
         font-size: 2em;
         gap: 10px;
     }
-    nav li, nav a{
+    nav li, nav a {
         display: block;
         padding: 0;
         width: 100%;
         text-align: center;
     }
-    main article{
+    main article {
         display: flex;
         justify-content: center;
         flex-direction: column;
+        align-items: center;
+        width: 100%;
     }
-    main article table{
-        width: 100vw;
+    main img{
+        width: 100%;
+        height: auto;
     }
-    main article div:has(table){
+    article p,main h1{
+        text-align: center;
+    }
+    main article div{
+        width: 100%;
+    }
+    main article div table{
+        margin: 0 auto;
+    }
+    main article div:has(table) {
         overflow-x: scroll;
     }
 }
 
-/* Aside Styles */
 aside * {
     color: var(--color-mid);
 }
 
 aside h1 {
-    text-align: center;
     font-weight: 700;
     font-size: 2em;
-    padding: 0;
-  }
-  
-
-aside a:hover * {
-    color: var(--color-brand);
-}
-
-aside a:hover li::before {
-    background-color: var(--color-brand);
 }
 
 aside a {
-    display: block;
     padding: 1em;
     color: inherit;
-    text-decoration: none;
 }
 
-/* Sidebar Styles */
 #Sidebar-list {
     list-style: none;
-    padding: 0;
-    margin: 0;
-    position: relative;
 }
 
 #Sidebar-list li {
     position: relative;
     padding-left: 2em;
     margin-bottom: 0.25em;
-    display: flex;
     align-items: center;
 }
 
@@ -268,12 +260,7 @@ aside a {
     width: 1em;
     height: 1em;
     border-radius: 50%;
-    background-color: var(--color-mid);
-    z-index: 1;
-}
-
-#Sidebar-list a:hover li::before {
-    background-color: var(--color-brand);
+    background: var(--color-mid);
 }
 
 #Sidebar-list li:not(.last)::after {
@@ -283,31 +270,40 @@ aside a {
     top: 1em;
     width: 3px;
     height: calc(100% + 1.5em);
-    background-color: var(--color-mid);
+    background: var(--color-mid);
     z-index: 0;
 }
 
 #Sidebar-list li a {
-    display: block;
     padding: 0.5em 1em;
     color: inherit;
-    width: 100%;
 }
 
 table, th, td {
     border: 1px solid var(--color-dark);
     border-collapse: collapse;
-    text-align: center;
-  }
-table thead{
-    background-color: var(--color-dark);
-    color: var(--color-white);
 }
-.lb-outerContainer { max-width:90vw; max-height:100vh; }
+
+.lb-outerContainer {
+    max-width: 90vw;
+    max-height: 100vh;
+}
 
 @media (orientation: landscape) {
-    .lb-image{ min-height:50vh!important; width: auto!important;}
+    .lb-image {
+        min-height: 50vh !important;
+        width: auto !important;
+    }
 }
+
 @media (orientation: portrait) {
-    .lb-image{ min-width:50vw!important; height: auto!important;}
+    .lb-image {
+        min-width: 50vw !important;
+        height: auto !important;
+    }
+}
+article{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }

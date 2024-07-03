@@ -1,6 +1,15 @@
 /* Phone version burger icon*/
 document.getElementById("Menu").addEventListener("click", function () {
 	document.getElementsByTagName("nav")[0].classList.toggle("active");
+	// Change the icon class
+	const menuElement = document.getElementById("Menu");
+	if (menuElement.classList.contains("fa-bars")) {
+		menuElement.classList.remove("fa-bars");
+		menuElement.classList.add("fa-x");
+	} else {
+		menuElement.classList.remove("fa-x");
+		menuElement.classList.add("fa-bars");
+	}
 });
 
 /*Sidebar generator*/
