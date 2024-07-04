@@ -23,7 +23,7 @@ nav ul, #Logo h2, #Logo h3, #Sidebar-list {
     padding: 0;
 }
 
-header, aside a:hover li::before, #Sidebar-list a:hover li::before {
+header, aside a:hover li::before, #Sidebar-list a:hover li::before, aside a.active li::before, #Sidebar-list a.active li::before {
     background: var(--color-brand);
 }
 
@@ -114,11 +114,10 @@ nav ul li a:hover {
 aside {
     position: sticky;
     top: 0;
-    flex: 1;
+    width: auto;
     background: var(--color-white);
     padding: 20px;
-    height: 100vh;
-    overflow-y: auto;
+    height:70vh;
 }
 
 main {
@@ -174,6 +173,8 @@ footer {
     }
     #Menu{
         display: block;
+        background-color: transparent;
+        border: none;
         color: var(--color-white);
         text-align: left;
         padding: 10px 20px;
@@ -249,6 +250,10 @@ aside h1 {
 aside a {
     padding: 1em;
     color: inherit;
+}
+
+main h1{
+    scroll-margin-top: 10vh;
 }
 
 #Sidebar-list {

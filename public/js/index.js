@@ -1,5 +1,5 @@
 /* Phone version burger icon*/
-document.getElementById("Menu").addEventListener("click", function () {
+const menu = () => {
 	document.getElementsByTagName("nav")[0].classList.toggle("active");
 	// Change the icon class
 	const menuElement = document.getElementById("Menu");
@@ -10,7 +10,7 @@ document.getElementById("Menu").addEventListener("click", function () {
 		menuElement.classList.remove("fa-x");
 		menuElement.classList.add("fa-bars");
 	}
-});
+};
 
 /*Sidebar generator*/
 document.addEventListener("DOMContentLoaded", function () {
@@ -45,5 +45,34 @@ document.addEventListener("DOMContentLoaded", function () {
 		if (link.getAttribute("data-page") === currentPage) {
 			link.classList.add("active");
 		}
+	});
+});
+
+/*highligth*/
+document.addEventListener("DOMContentLoaded", function () {
+	const articles = document.querySelectorAll("main h1");
+	const links = document.querySelectorAll("#Sidebar-list a");
+
+	if (articles.length === 0 || links.length === 0) {
+		console.error("No articles or links found. Check your selectors.");
+		return;
+	}
+
+	window.addEventListener("scroll", function () {
+		let current = "";
+		articles.forEach((section) => {
+			const sectionTop = section.offsetTop;
+			if (window.pageYOffset >= sectionTop - 80) {
+				// Adjust 10 to account for small differences
+				current = section.getAttribute("id");
+			}
+		});
+
+		links.forEach((link) => {
+			link.classList.remove("active");
+			if (link.getAttribute("href").slice(1) === current) {
+				link.classList.add("active");
+			}
+		});
 	});
 });
