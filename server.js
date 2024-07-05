@@ -1,116 +1,98 @@
-const router = require("find-my-way")();
-const http = require("http");
+const fastify = require("fastify")({logger: {level: "error"}});
 const ejs = require("ejs");
 const NodeCache = require("node-cache");
 const path = require("path");
-const fs = require("fs");
-const mime = require("mime-types");
+const fastifyStatic = require("@fastify/static");
+const fastifyFormbody = require("@fastify/formbody");
 
 // Initialize the cache
 const cache = new NodeCache();
 
-// Request counter
-const requestCounter = {
-	homePage: 0,
-	parskoluPage: 0,
-	zinasPage: 0,
-	macibasPage: 0,
-	darbiniekiPage: 0,
-	skoleniemPage: 0,
-};
-
 // Function to handle rendering and caching
-const renderAndCache = (res, cacheKey, templatePath, content) => {
+const renderAndCache = (reply, cacheKey, templatePath, content) => {
 	const cachedHtml = cache.get(cacheKey);
 
 	if (cachedHtml) {
 		// Serve cached page
-		res.setHeader("Content-Type", "text/html");
-		res.end(cachedHtml);
+		reply.type("text/html").send(cachedHtml);
 	} else {
 		// Render page and cache it
 		ejs.renderFile(templatePath, {content}, {}, (err, str) => {
 			if (err) {
-				res.statusCode = 500;
-				res.end(`Error rendering EJS: ${err}`);
+				reply.status(500).send(`Error rendering EJS: ${err}`);
 			} else {
 				cache.set(cacheKey, str);
-				res.setHeader("Content-Type", "text/html");
-				res.end(str);
+				reply.type("text/html").send(str);
 			}
 		});
 	}
 };
 
-// Middleware to serve static files
-const serveStatic = (rootDir) => {
-	return (req, res) => {
-		const filePath = path.join(rootDir, req.url);
-		fs.readFile(filePath, (err, data) => {
-			if (err) {
-				// File not found, continue with other routes
-				router.lookup(req, res);
-			} else {
-				// Serve the file
-				res.setHeader("Content-Type", mime.lookup(filePath));
-				res.end(data);
-			}
-		});
-	};
-};
+// Serve static files
+fastify.register(fastifyStatic, {
+	root: path.join(__dirname, "public"),
+	prefix: "/public/", // optional: default '/'
+});
+
+// Register the formbody plugin to parse URL-encoded form data
+fastify.register(fastifyFormbody);
 
 // Define routes
-router.on("GET", "/", (req, res) => {
-	renderAndCache(res, "homePage", "views/frame.ejs", "home");
+fastify.get("/", (req, reply) => {
+	renderAndCache(reply, "homePage", "views/frame.ejs", "home");
 });
 
-router.on("GET", "/parskolu", (req, res) => {
-	renderAndCache(res, "parskoluPage", "views/frame.ejs", "parskolu");
+fastify.get("/parskolu", (req, reply) => {
+	renderAndCache(reply, "parskoluPage", "views/frame.ejs", "parskolu");
 });
 
-router.on("GET", "/zinas", (req, res) => {
-	renderAndCache(res, "zinasPage", "views/frame.ejs", "zinas");
+fastify.get("/zinas", (req, reply) => {
+	renderAndCache(reply, "zinasPage", "views/frame.ejs", "zinas");
 });
 
-router.on("GET", "/macibas", (req, res) => {
-	renderAndCache(res, "macibasPage", "views/frame.ejs", "macibas");
+fastify.get("/macibas", (req, reply) => {
+	renderAndCache(reply, "macibasPage", "views/frame.ejs", "macibas");
 });
 
-router.on("GET", "/darbinieki", (req, res) => {
-	renderAndCache(res, "darbiniekiPage", "views/frame.ejs", "darbinieki");
+fastify.get("/darbinieki", (req, reply) => {
+	renderAndCache(reply, "darbiniekiPage", "views/frame.ejs", "darbinieki");
 });
 
-router.on("GET", "/skoleniem", (req, res) => {
-	renderAndCache(res, "skoleniemPage", "views/frame.ejs", "skoleniem");
+fastify.get("/skoleniem", (req, reply) => {
+	renderAndCache(reply, "skoleniemPage", "views/frame.ejs", "skoleniem");
 });
 
-// router.on("GET", "/admin", (req, res) => {
-// 	ejs.renderFile("views/admin.ejs", {content: "admin"}, {}, (err, str) => {
-// 		if (err) {
-// 			res.statusCode = 500;
-// 			res.end(`Error rendering EJS: ${err}`);
-// 		} else {
-// 			res.setHeader("Content-Type", "text/html");
-// 			res.end(str);
-// 		}
-// 	});
-// });
+fastify.get("/admin", (req, reply) => {
+	ejs.renderFile("views/admin.ejs", {content: "admin"}, {}, (err, str) => {
+		if (err) {
+			reply.status(500).send(`Error rendering EJS: ${err}`);
+		} else {
+			reply.type("text/html").send(str);
+		}
+	});
+});
+
+// Handle form submission
+fastify.post("/submit-content", (req, reply) => {
+	const {Title, Type, EDate, Date, Content, Publish} = req.body;
+	console.log("Form Data:", {Title, Type, EDate, Date, Content, Publish});
+	reply.send({success: true, message: "Form data received"});
+});
 
 // Catch-all route for 404
-router.on("GET", "*", (req, res) => {
-	res.statusCode = 404;
-	console.log(req.url);
-	renderAndCache(res, "404", "views/frame.ejs", "404");
+fastify.get("*", (req, reply) => {
+	renderAndCache(reply, "404", "views/frame.ejs", "404");
 });
 
-// Create the HTTP server
+// Start the server
 const port = process.env.PORT || 3000;
-http
-	.createServer((req, res) => {
-		// Check for static files first
-		const staticFilePath = path.join(__dirname, "public");
-		serveStatic(staticFilePath)(req, res);
-	})
-	.listen(port, () => {
+const start = async () => {
+	try {
+		await fastify.listen({port: port});
 		console.log(`Server listening on: http://localhost:${port}`);
-	});
+	} catch (err) {
+		fastify.log.error(err);
+		process.exit(1);
+	}
+};
+start();
