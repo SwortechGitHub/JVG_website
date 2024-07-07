@@ -142,15 +142,15 @@ fastify.get("/skoleniem", (req, reply) => {
 	renderAndCache(reply, "skoleniemPage", "skoleniem");
 });
 
-fastify.get("/admin", (req, reply) => {
-	ejs.renderFile("views/admin.ejs", {content: "admin"}, {}, (err, str) => {
-		if (err) {
-			reply.status(500).send(`Error rendering EJS: ${err}`);
-		} else {
-			reply.type("text/html").send(str);
-		}
-	});
-});
+// fastify.get("/admin", (req, reply) => {
+// 	ejs.renderFile("views/admin.ejs", {content: "admin"}, {}, (err, str) => {
+// 		if (err) {
+// 			reply.status(500).send(`Error rendering EJS: ${err}`);
+// 		} else {
+// 			reply.type("text/html").send(str);
+// 		}
+// 	});
+// });
 
 // Handle form submission
 fastify.post("/submit-content", (req, reply) => {
@@ -179,7 +179,7 @@ fastify.get("*", (req, reply) => {
 const port = process.env.PORT || 3000;
 const start = async () => {
 	try {
-		await fastify.listen({port: port});
+		await fastify.listen({port: port, host: "0.0.0.0"}); // Ensure host is set to '0.0.0.0'
 		console.log(`Server listening on: http://localhost:${port}`);
 	} catch (err) {
 		fastify.log.error(err);
