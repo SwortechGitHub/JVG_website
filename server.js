@@ -4,12 +4,29 @@ const NodeCache = require("node-cache");
 const path = require("path");
 const fastifyStatic = require("@fastify/static");
 const fastifyFormbody = require("@fastify/formbody");
+const mongoose = require("mongoose");
+
+// Import the mongodb models
+const Blogs = require("./schemas/blog");
+
+// Connect to MongoDB database
+mongoose
+	.connect(
+		"mongodb+srv://Server:D9sI5OujpRS3dMuu@schoolwen.ow8o4jw.mongodb.net/?retryWrites=true&w=majority&appName=SchoolWen",
+	)
+	.then(() => {
+		console.log("Connected to MongoDB");
+	})
+	.catch((e) => {
+		console.error("Error connecting to MongoDB:", e);
+		server.close();
+	});
 
 // Initialize the cache
 const cache = new NodeCache();
 
 // Function to handle rendering and caching
-const renderAndCache = (reply, cacheKey, templatePath, content) => {
+const renderAndCache = (reply, cacheKey, content) => {
 	const cachedHtml = cache.get(cacheKey);
 
 	if (cachedHtml) {
@@ -17,7 +34,7 @@ const renderAndCache = (reply, cacheKey, templatePath, content) => {
 		reply.type("text/html").send(cachedHtml);
 	} else {
 		// Render page and cache it
-		ejs.renderFile(templatePath, {content}, {}, (err, str) => {
+		ejs.renderFile("views/frame.ejs", {content}, {}, (err, str) => {
 			if (err) {
 				reply.status(500).send(`Error rendering EJS: ${err}`);
 			} else {
@@ -39,27 +56,90 @@ fastify.register(fastifyFormbody);
 
 // Define routes
 fastify.get("/", (req, reply) => {
-	renderAndCache(reply, "homePage", "views/frame.ejs", "home");
+	renderAndCache(reply, "homePage", "home");
 });
 
 fastify.get("/parskolu", (req, reply) => {
-	renderAndCache(reply, "parskoluPage", "views/frame.ejs", "parskolu");
+	renderAndCache(reply, "parskoluPage", "parskolu");
 });
 
-fastify.get("/zinas", (req, reply) => {
-	renderAndCache(reply, "zinasPage", "views/frame.ejs", "zinas");
+fastify.get("/zinas", async (req, reply) => {
+	try {
+		const cachedHtml = cache.get("zinasPage");
+
+		if (cachedHtml) {
+			// Serve cached page
+			reply.type("text/html").send(cachedHtml);
+		} else {
+			// Render page and cache it
+			ejs.renderFile("views/frame.ejs", {content: "zinas"}, {}, (err, str) => {
+				if (err) {
+					reply.status(500).send(`Error rendering EJS: ${err}`);
+				} else {
+					cache.set("zinasPage", str);
+					reply.type("text/html").send(str);
+				}
+			});
+		}
+	} catch (err) {
+		console.error(err);
+		reply.status(500).send("Internal Server Error");
+	}
 });
+
+fastify.get("/zinas-data", async (req, reply) => {
+	try {
+		const blogs = await Blogs.find({Published: true})
+			.sort({Date: -1})
+			.limit(5)
+			.exec();
+
+		reply.type("application/json").send(blogs);
+	} catch (err) {
+		console.error(err);
+		reply.status(500).type("application/json").send("");
+	}
+});
+
+// fastify.get("/zina/:id", async (req, reply) => {
+// 	try {
+// 		const blog = await Blogs.findById(req.params.id).exec();
+// 		if (!blog) {
+// 			return reply.status(404).send({message: "Blog not found"});
+// 		}
+// 		ejs.renderFile(
+// 			"views/frame.ejs",
+// 			{
+// 				content: `
+// 		<h2>${blog.Title}</h2>
+// 		<div>${blog.Text}</div>
+// 		<small>${blog.Date}</small>
+// 	  `,
+// 			},
+// 			{},
+// 			(err, str) => {
+// 				if (err) {
+// 					reply.status(500).send(`Error rendering EJS: ${err}`);
+// 				} else {
+// 					reply.type("text/html").send(str);
+// 				}
+// 			},
+// 		);
+// 	} catch (err) {
+// 		reply.status(500).send({message: "Internal Server Error"});
+// 	}
+// });
 
 fastify.get("/macibas", (req, reply) => {
-	renderAndCache(reply, "macibasPage", "views/frame.ejs", "macibas");
+	renderAndCache(reply, "macibasPage", "macibas");
 });
 
 fastify.get("/darbinieki", (req, reply) => {
-	renderAndCache(reply, "darbiniekiPage", "views/frame.ejs", "darbinieki");
+	renderAndCache(reply, "darbiniekiPage", "darbinieki");
 });
 
 fastify.get("/skoleniem", (req, reply) => {
-	renderAndCache(reply, "skoleniemPage", "views/frame.ejs", "skoleniem");
+	renderAndCache(reply, "skoleniemPage", "skoleniem");
 });
 
 fastify.get("/admin", (req, reply) => {
@@ -74,14 +154,25 @@ fastify.get("/admin", (req, reply) => {
 
 // Handle form submission
 fastify.post("/submit-content", (req, reply) => {
-	const {Title, Type, EDate, Date, Content, Publish} = req.body;
-	console.log("Form Data:", {Title, Type, EDate, Date, Content, Publish});
+	const {Title, Type, EDate, Date, Image, Content, Publish} = req.body;
+	const blog = new Blogs({
+		Title: Title,
+		Img: Image,
+		Text: Content,
+		Publish: Publish == "on",
+		EventDate: EDate,
+		Date: Date,
+		Type: Type,
+		Author: "me",
+	});
+	console.log(blog);
+	blog.save();
 	reply.send({success: true, message: "Form data received"});
 });
 
 // Catch-all route for 404
 fastify.get("*", (req, reply) => {
-	renderAndCache(reply, "404", "views/frame.ejs", "404");
+	renderAndCache(reply, "404", "404");
 });
 
 // Start the server

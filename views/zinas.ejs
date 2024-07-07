@@ -1,2 +1,82 @@
-<h1>Ziņas</h1>
-<div class="text">Pagaidām, šī lapa nav pabeigta!</div>
+<style>
+    aside{
+        display: none;
+    }
+    #blogs-container .blog-text {
+        display: flex;
+        flex-flow: column wrap;
+        overflow: hidden;
+        height: 4.4em;
+        width: 90vw;
+        cursor: pointer;
+    }
+    #blogs-container .blog-text p{
+        text-overflow: ellipsis; 
+        display: block; 
+        overflow: hidden; 
+    }
+    #main-content img{
+        margin-right: 20px;
+        margin-bottom: 20px;
+    }
+    #blogs-container .blog-text img{
+        display: none;
+    }
+</style>
+<main id="main-content"></main>
+<div id="blogs-container"></div>
+
+<script>
+    async function fetchBlogs() {
+      try {
+        const response = await fetch('/zinas-data');
+        const blogs = await response.json();
+        const blogsContainer = document.getElementById('blogs-container');
+
+        blogs.forEach(blog => {
+          const blogElement = document.createElement('div');
+          blogElement.innerHTML = `
+            <h2>${blog.Title}</h2>
+            <div class="blog-text" data-blog-id="${blog._id}">${blog.Text}</div>
+            <small>${blog.Date}</small>
+            <hr>
+          `;
+          blogsContainer.appendChild(blogElement);
+
+          // Add event listener to the blog element
+          const blogTextElement = blogElement.querySelector('.blog-text');
+          blogTextElement.addEventListener('click', () => {
+            displayFullBlog(blog);
+          });
+        });
+      } catch (error) {
+        console.error('Error fetching blogs:', error);
+      }
+    }
+
+    function displayFullBlog(blog) {
+        const newUrl = `/zina/${blog._id}`;
+        history.pushState({}, '', newUrl);
+        const mainContent = document.getElementById('main-content');
+        mainContent.innerHTML = `
+        <h2>${blog.Title}</h2>
+        <div>${blog.Text}</div>
+        <small>${blog.Date}</small>
+        `;
+        const blogsContainer = document.getElementById('blogs-container');
+        blogsContainer.style.display = 'none';
+    }
+
+    window.addEventListener('popstate', (event) => {
+      if (event.state && event.state.blogId) {
+        const blog = blogHistory.find(b => b._id === event.state.blogId);
+        if (blog) {
+          displayFullBlog(blog);
+        }
+      } else {
+        window.location.href = '/zinas';
+      }
+    });
+
+    fetchBlogs();
+  </script>

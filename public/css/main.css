@@ -327,20 +327,20 @@ article{
     display: flex;
     overflow-x: auto; /* Enable horizontal scrolling if images overflow */
     white-space: nowrap; /* Prevent images from wrapping to the next line */
-  }
+}
   
-  /* Style for the gallery links */
-  .gallery a {
+/* Style for the gallery links */
+.gallery a {
     display: inline-block; /* Display images inline */
     margin-right: 10px; /* Add some space between images */
     border-radius: 5px;
     transition: transform 0.3s ease;
-  }
+}
   
-  /* Style for the gallery images */
-  .gallery img {
+/* Style for the gallery images */
+.gallery img {
     width: 200px; /* Set a fixed width for the images */
     height: 200px; /* Set a fixed height for the images */
     object-fit: cover; /* Maintain aspect ratio and cover the area */
     transition: transform 0.3s ease;
-  }
+}
