@@ -1,14 +1,14 @@
 /* Phone version burger icon*/
-const menu = () => {
-	document.getElementsByTagName("nav")[0].classList.toggle("active");
+const PhoneMenu = () => {
+	document.getElementById("Menu").classList.toggle("active");
 	// Change the icon class
-	const menuElement = document.getElementById("Menu");
-	if (menuElement.classList.contains("fa-bars")) {
-		menuElement.classList.remove("fa-bars");
-		menuElement.classList.add("fa-x");
+	const PhoneMenuElement = document.getElementById("PhoneMenu");
+	if (PhoneMenuElement.classList.contains("fa-bars")) {
+		PhoneMenuElement.classList.remove("fa-bars");
+		PhoneMenuElement.classList.add("fa-x");
 	} else {
-		menuElement.classList.remove("fa-x");
-		menuElement.classList.add("fa-bars");
+		PhoneMenuElement.classList.remove("fa-x");
+		PhoneMenuElement.classList.add("fa-bars");
 	}
 };
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="lv">
+<html lang="lv" data-theme="light">
 
 <head>
   <meta charset="UTF-8">
@@ -7,7 +7,7 @@
   <link rel="icon" type="image/x-icon" href="/public/files/images/logo.webp">
   <title>JVĢ</title>
   <!-- SCRIPTS -->
-  <script defer src="/public/js/index.js"></script>
+  <script src="/public/js/index.js"></script>
   <script src="https://kit.fontawesome.com/74e30751de.js" crossorigin="anonymous"></script>
   <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
   <!-- jQuery -->
@@ -23,42 +23,46 @@
       'disableScrolling': true
     })
   </script>
+  <!-- Pico CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
   <!-- STYLES -->
   <link href="/public/css/main.css" rel="stylesheet" />
 </head>
-
 <body>
-  <header>
-    <a id="Logo" href="/">
-      <img src="/public/files/images/logo.webp" />
-      <div id="LogoName">
-        <h2>Jēkabpils</h2>
-        <h3>Valsts ģimnāzija</h3>
-      </div>
-    </a>
-    <button onclick="menu()" id="Menu" class="fa-solid fa-bars" style="font-size: 2em;"></button>
-    <nav>
-      <ul>
-        <li><a href="/parskolu" data-page="parskolu">Par skolu</a></li>
-        <li><a href="/zinas" data-page="zinas">Ziņas</a></li>
-        <li><a href="/macibas" data-page="macibas">Mācībām</a></li>
-        <li><a href="/darbinieki" data-page="darbinieki">Darbinieki</a></li>
-        <li><a href="/skoleniem" data-page="skoleniem">Skolēniem</a></li>
-      </ul>
-    </nav>
-  </header>
-  <a href="#Logo" id="Up" class="fa-solid fa-circle-up"></a>
-  <div class="container">
+  <nav>
+    <ul>
+      <a id="Logo" href="/">
+        <img src="/public/files/images/logo.webp" />
+        <hgroup>
+          <h3>Jēkabpils</h3>
+          <p><small>Valsts ģimnāzija</small></p>
+        </hgroup>
+      </a>
+    </ul>
+    <ul>
+      <li><button onclick="PhoneMenu()" id="PhoneMenu" class="fa-solid fa-bars"></button></li>
+    </ul>
+    <ul id="Menu">
+      <li><a href="/parskolu" data-page="parskolu" >Par skolu</a></li>
+      <li><a href="/zinas" data-page="zinas">Ziņas</a></li>
+      <li><a href="/macibas" data-page="macibas">Mācībām</a></li>
+      <li><a href="/darbinieki" data-page="darbinieki">Darbinieki</a></li>
+      <li><a href="/skoleniem" data-page="skoleniem">Skolēniem</a></li>
+    </ul>
+  </nav>
+  <div id="Content">
     <aside>
-      <h1>Saturs</h1>
-      <ul id="Sidebar-list">
-      </ul>
+      <nav>
+        <ul id="Sidebar-list">
+        </ul>
+      </nav>
     </aside>
     <main>
-      <%- include (content)%>
+      <%- include(content)%>
     </main>
   </div>
-  <footer>
+  <a href="#Logo" id="Up" class="fa-solid fa-circle-up"></a>
+  <footer class="grid">
     <div>
       <h3>Autortiesības</h3>
       <p>&copy; 2024</p>
@@ -77,5 +81,4 @@
     </div>
   </footer>
 </body>
-
 </html>
