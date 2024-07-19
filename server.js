@@ -5,6 +5,8 @@ const path = require("path");
 const fastifyStatic = require("@fastify/static");
 const fastifyFormbody = require("@fastify/formbody");
 const mongoose = require("mongoose");
+//System data
+const os = require("os");
 
 // Import the mongodb models
 const Blogs = require("./schemas/blog");
@@ -142,18 +144,49 @@ fastify.get("/skoleniem", (req, reply) => {
 	renderAndCache(reply, "skoleniemPage", "skoleniem");
 });
 
-// fastify.get("/admin", (req, reply) => {
-// 	ejs.renderFile("views/admin.ejs", {content: "admin"}, {}, (err, str) => {
-// 		if (err) {
-// 			reply.status(500).send(`Error rendering EJS: ${err}`);
-// 		} else {
-// 			reply.type("text/html").send(str);
-// 		}
-// 	});
-// });
+fastify.get("/a01d92m83i74n65/dashboard", (req, reply) => {
+	ejs.renderFile(
+		"views/admin.ejs",
+		{content: "admin/dashboard"},
+		{},
+		(err, str) => {
+			if (err) {
+				reply.status(500).send(`Error rendering EJS: ${err}`);
+			} else {
+				reply.type("text/html").send(str);
+			}
+		},
+	);
+});
+
+fastify.get("/a01d92m83i74n65/blogs", async (req, reply) => {
+	try {
+		// Fetch blogs with specified fields and sort by date in descending order
+		const blogs = await Blogs.find({}, "Title Publish Date Type Author")
+			.sort({Date: -1})
+			.exec();
+
+		// Render the EJS template with the blogs data
+		ejs.renderFile(
+			"views/admin.ejs",
+			{content: "admin/blogs", blogs: blogs},
+			{},
+			(err, str) => {
+				if (err) {
+					reply.status(500).send(`Error rendering EJS: ${err}`);
+				} else {
+					reply.type("text/html").send(str);
+				}
+			},
+		);
+	} catch (err) {
+		console.error(err);
+		reply.status(500).send("Internal Server Error");
+	}
+});
 
 // Handle form submission
-fastify.post("/submit-content", (req, reply) => {
+fastify.post("/a01d92m83i74n65/submit-content", (req, reply) => {
 	const {Title, Type, EDate, Date, Image, Content, Publish} = req.body;
 	const blog = new Blogs({
 		Title: Title,
@@ -168,6 +201,11 @@ fastify.post("/submit-content", (req, reply) => {
 	console.log(blog);
 	blog.save();
 	reply.send({success: true, message: "Form data received"});
+});
+
+fastify.get("/a01d92m83i74n65/api/cpus", (request, reply) => {
+	const cpus = os.cpus().map((cpu) => cpu.speed);
+	reply.send(cpus);
 });
 
 // Catch-all route for 404

@@ -1,0 +1,60 @@
+<style>
+    #cpuChart {
+  width: 100% !important;
+  height: auto !important;
+  max-width: 800px;
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<h1>CPU Speed Diagram</h1>
+  <canvas id="cpuChart"></canvas>
+  <script>
+    let cpuChart = null; // To store the Chart.js instance
+
+async function fetchCpuSpeeds() {
+  const response = await fetch('/a01d92m83i74n65/api/cpus');
+  const speeds = await response.json();
+  return speeds;
+}
+
+async function createChart() {
+  const speeds = await fetchCpuSpeeds();
+  const ctx = document.getElementById('cpuChart').getContext('2d');
+  cpuChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: speeds.map((_, index) => `Core ${index + 1}`),
+      datasets: [{
+        label: 'CPU Speed (MHz)',
+        data: speeds,
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+}
+
+async function updateCpuSpeed() {
+  const speeds = await fetchCpuSpeeds();
+  const cpuSpeedElement = document.getElementById('cpuSpeed');
+  if (cpuSpeedElement) {
+    cpuSpeedElement.innerHTML = `CPU Speeds: ${speeds.join(', ')} MHz`;
+  }
+  if (cpuChart) {
+    cpuChart.data.datasets[0].data = speeds;
+    cpuChart.update();
+  }
+}
+
+createChart();
+updateCpuSpeed();
+setInterval(updateCpuSpeed, 5000); // Update every 5 seconds
+  </script>

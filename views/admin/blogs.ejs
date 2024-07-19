@@ -1,0 +1,108 @@
+<form id="contentForm" action="/a01d92m83i74n65/submit-content" method="post" style="display: flex; flex-direction: column;">
+  <label for="T1">Title:
+      <input type="text" name="Title" id="T1" required onchange="titleChange()">
+  </label>
+  <label for="T2">Type:
+      <select name="Type" id="T2">
+          <option value="N">Notikums</option>
+          <option value="LD">Labais darbs</option>
+          <option value="LSS">Latvijas skolas soma</option>
+      </select>
+  </label>
+  <label for="ED">Event Date:
+      <input type="datetime-local" name="EDate" id="ED">
+  </label>
+  <label for="D">Date:
+      <input type="date" name="Date" id="D" required>
+  </label>
+  <label for="I">Cover image:
+      <input type="text" name="Image" id="I">
+  </label>
+  <textarea id="editor" name="Content"></textarea>
+  <label for="P">Publish?
+      <input type="checkbox" name="Publish" id="P">
+  </label>
+  <button type="submit" onclick="submitForm()">Submit</button>
+</form>
+<content>
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Type</th>
+                <th>Publish</th>
+                <th>Date</th>
+                <th>Author</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% blogs.forEach(blog => { %>
+                <tr>
+                    <td><%= blog.Title %></td>
+                    <td><%= blog.Type %></td>
+                    <td><%= blog.Publish %></td>
+                    <td><%= blog.Date %></td>
+                    <td><%= blog.Author %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</content>
+<script>
+  // Initialize CKEditor
+  CKEDITOR.replace('editor', {
+      entities_latin: false,
+      disableNotification: true,
+      toolbar: [
+          { name: 'document', items: ['Source', '-', 'Save', 'NewPage', 'ExportPdf', 'Preview', 'Print', '-', 'Templates'] },
+          { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'] },
+          { name: 'editing', items: ['Find', 'Replace', '-', 'SelectAll', '-', 'Scayt'] },
+          { name: 'forms', items: ['Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField'] },
+          '/',
+          { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat'] },
+          { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl', 'Language'] },
+          { name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
+          { name: 'insert', items: ['Image', 'Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe'] },
+          '/',
+          { name: 'styles', items: ['Styles', 'Format', 'Font', 'FontSize'] },
+          { name: 'colors', items: ['TextColor', 'BGColor'] },
+          { name: 'tools', items: ['Maximize', 'ShowBlocks'] },
+          { name: 'about', items: ['About'] }
+      ]
+  });
+
+  const submitForm = ()=> {
+      event.preventDefault();
+
+      document.getElementById('editor').value = CKEDITOR.instances.editor.getData().replace(/\n/g, '').trim();
+
+      const form = document.getElementById('contentForm');
+      const formData = new FormData(form);
+      const searchParams = new URLSearchParams(formData);
+      
+      fetch(form.action, {
+          method: 'POST',
+          body: searchParams,
+          headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+          }
+      })
+      .then(response => {
+          if (!response.ok) {
+              throw new Error('Network response was not ok ' + response.statusText);
+          }
+          return response.json();
+      })
+      .then(data => {
+          if (data.success) {
+              alert(data.message);
+          } else {
+              alert('Error: ' + data.message);
+          }
+      })
+      .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred while submitting the form.');
+      });
+  };
+</script>
