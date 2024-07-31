@@ -1,0 +1,131 @@
+<script>
+    window.onload = function() {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('D').value = today;
+    };
+</script>
+<form id="contentForm" action="/a01d92m83i74n65/submit-page" method="post" style="display: flex; flex-direction: column;">
+    <label for="S1">Sadaļa:</label>
+    <select name="Section" id="S">
+        <option value="Home">Home</option>
+        <option value="Par skolu">Par skolu</option>
+        <option value="Mācības">Mācības</option>
+        <option value="Darbinieki">Darbinieki</option>
+        <option value="Skolēniem">Skolēniem</option>
+    </select>
+    <label for="T1">Virsraksts:</label>
+    <input type="text" name="Title" id="T1" required>
+    <label for="T2">Veids:</label>
+    <select name="Type" id="T2">
+        <option value="Teksts">Teksts</option>
+        <option value="Sāna attēls">Sāna attēls</option>
+        <option value="Fona attēls">Fona attēls</option>
+    </select>
+    <label for="I1">Attēls (Ja veids NAV teksts):</label>
+    <input type="text" name="Image" id="I1">
+    <textarea id="editor" name="Content"></textarea>
+    <button type="submit" id="submitBtn" onclick="submitForm()">Pievienot</button>
+</form>
+<style>
+    table{
+        margin: 0;
+        padding: 0;
+    }
+    details{
+        margin: 5px 10px;
+        padding: 0;
+    }
+</style>
+<content style="min-width: 65vw;">
+    <% Object.keys(groupedPages).forEach(section => { %>
+        <details>
+            <summary role="button" class="outline"><%= section %></summary>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Secība</th>
+                        <th>Virsraksts</th>
+                        <th>Veids</th>
+                        <th>Datums</th>
+                        <th>Autors</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% groupedPages[section].forEach(page => { %>
+                        <tr id="<%= page._id %>">
+                            <td><%= page.Order %></td>
+                            <td><%= page.Title %></td>
+                            <td><%= page.Type %></td>
+                            <td><%= page.Date.toDateString() %></td>
+                            <td><%= page.Author %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </details>
+    <% }) %>
+</content>
+
+<script>
+    CKEDITOR.replace('editor', {
+        contentCSS: "/public/css/editor.css",
+        entities_latin: false,
+        disableNotification: true,
+        toolbar: [
+            { name: 'document', items: ['Source', '-', 'Save', 'NewPage', 'ExportPdf', 'Preview', 'Print', '-', 'Templates'] },
+            { name: 'clipboard', items: ['PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'] },
+            { name: 'editing', items: ['Find', 'Replace', '-', 'SelectAll', '-', 'Scayt'] },
+            { name: 'forms', items: ['Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField'] },
+            '/',
+            { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat'] },
+            { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl', 'Language'] },
+            { name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
+            { name: 'insert', items: ['Image', 'Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe'] },
+            '/',
+            { name: 'colors', items: ['TextColor', 'BGColor'] },
+            { name: 'tools', items: ['Maximize', 'ShowBlocks'] },
+            { name: 'about', items: ['About'] }
+        ]
+    });
+
+    const submitForm = () => {  
+        event.preventDefault();
+
+        document.getElementById('editor').value = CKEDITOR.instances.editor.getData().replace(/\n/g, '').trim();
+
+        const form = document.getElementById('contentForm');
+        const action = new URL(form.action)
+        if (action.pathname == "/a01d92m83i74n65/api/updatePage") {
+            form.appendChild(idInput);
+        }
+        const formData = new FormData(form);
+        const searchParams = new URLSearchParams(formData);
+
+        fetch(form.action, {
+            method: 'POST',
+            body: searchParams,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                form.action = "/a01d92m83i74n65/submit-page"
+                form.reset()
+                document.getElementById('submitBtn').innerText = "Pievienot"
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while submitting the form.');
+        });
+    };
+</script>

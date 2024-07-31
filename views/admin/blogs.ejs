@@ -1,108 +1,241 @@
-<form id="contentForm" action="/a01d92m83i74n65/submit-content" method="post" style="display: flex; flex-direction: column;">
-  <label for="T1">Title:
-      <input type="text" name="Title" id="T1" required onchange="titleChange()">
-  </label>
-  <label for="T2">Type:
-      <select name="Type" id="T2">
-          <option value="N">Notikums</option>
-          <option value="LD">Labais darbs</option>
-          <option value="LSS">Latvijas skolas soma</option>
-      </select>
-  </label>
-  <label for="ED">Event Date:
-      <input type="datetime-local" name="EDate" id="ED">
-  </label>
-  <label for="D">Date:
-      <input type="date" name="Date" id="D" required>
-  </label>
-  <label for="I">Cover image:
-      <input type="text" name="Image" id="I">
-  </label>
+<script>
+    window.onload = function() {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('D').value = today;
+    };
+</script>
+<form id="contentForm" action="/a01d92m83i74n65/submit-blog" method="post" style="display: flex; flex-direction: column;">
+  <label for="T1">Virsraksts:</label>
+  <input type="text" name="Title" id="T1" required>
+  <label for="T2">Veids:</label>
+  <select name="Type" id="T2">
+    <option value="N">Notikums</option>
+    <option value="LD">Labais darbs</option>
+    <option value="LSS">Latvijas skolas soma</option>
+  </select>
+  <label for="ED">Notikuma datums (Nav obligāts):</label>
+  <input type="datetime-local" name="EDate" id="ED">
+  <label for="D">Datums:</label>
+  <input type="date" name="Date" id="D" required>
+  <label for="I">Bloga attēls (Nestrādā):</label>
+  <input type="text" name="Image" id="I">
   <textarea id="editor" name="Content"></textarea>
-  <label for="P">Publish?
-      <input type="checkbox" name="Publish" id="P">
+  <label for="P">Publicēt?
+      <input type="checkbox" style="height: 90% !important;" name="Publish" id="P">
   </label>
-  <button type="submit" onclick="submitForm()">Submit</button>
+  <button type="submit" id="submitBtn" onclick="submitForm()">Pievienot</button>
 </form>
-<content>
+<content  style="min-width: 65vw;">
     <table>
         <thead>
             <tr>
-                <th>Title</th>
-                <th>Type</th>
-                <th>Publish</th>
-                <th>Date</th>
-                <th>Author</th>
+                <th>Virsraksts</th>
+                <th>Veids</th>
+                <th>Publicēts</th>
+                <th>Datums</th>
+                <th>Autors</th>
             </tr>
         </thead>
         <tbody>
             <% blogs.forEach(blog => { %>
-                <tr>
+                <tr id="<%= blog._id%>">
                     <td><%= blog.Title %></td>
                     <td><%= blog.Type %></td>
-                    <td><%= blog.Publish %></td>
-                    <td><%= blog.Date %></td>
+                    <td><%= blog.Published %></td>
+                    <td><%= blog.Date.toDateString()%></td>
                     <td><%= blog.Author %></td>
                 </tr>
             <% }) %>
         </tbody>
     </table>
+    <div class="context-menu" id="contextMenu">
+        <ul>
+            <li onclick="edit(this)">Edit</li>
+            <li onclick="publish(this)" id="CM_publish">Atpublicēt</li>
+            <li>Apskatīties</li>
+            <li onclick="deleteBlog(this)">Delete</li>
+        </ul>
+    </div>
+    <script defer>
+        let currentRowId = null;
+
+        document.addEventListener('contextmenu', function(event) {
+            event.preventDefault();
+            const contextMenu = document.getElementById('contextMenu');
+            const targetElement = event.target;
+            if (targetElement.tagName === 'TD') {
+                currentRowId = targetElement.parentElement.id;
+                const publishCell = document.getElementById(currentRowId).querySelector('td:nth-child(3)');
+                const publishStatus = publishCell.textContent.trim() === 'true';
+                document.getElementById("CM_publish").textContent = publishStatus ? "Atpublicēt" : "Publicēt";
+                contextMenu.style.display = 'block';
+                contextMenu.style.left = `${event.pageX}px`;
+                contextMenu.style.top = `${event.pageY}px`;
+            } else {
+                contextMenu.style.display = 'none';
+            }
+        });
+
+        document.addEventListener('click', function() {
+            const contextMenu = document.getElementById('contextMenu');
+            contextMenu.style.display = 'none';
+        });
+
+        async function edit(element) {
+
+            try {
+                const response = await fetch(`/a01d92m83i74n65/api/getBlog`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id: currentRowId })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch blog information.');
+                }
+
+                const blog = await response.json();
+
+                document.getElementById('T1').value = blog.Title;
+                document.getElementById('T2').value = blog.Type;
+                document.getElementById('ED').value = blog.EventDate ? blog.EventDate.slice(0, 16) : "";
+                document.getElementById('D').value = blog.Date.slice(0, 10);
+                document.getElementById('I').value = blog.Img;
+                CKEDITOR.instances.editor.setData(blog.Text);
+                document.getElementById('P').checked = blog.Published;
+                document.getElementById('contentForm').action = "/a01d92m83i74n65/api/updateBlog";
+                document.getElementById('submitBtn').textContent = "Atjaunot";
+                idInput.value = currentRowId;
+            } catch (error) {
+                console.error(error);
+                alert('Failed to fetch blog information.');
+            }
+        }
+
+        async function publish(element) {
+            const row = document.getElementById(currentRowId);
+            try {
+                const response = await fetch('/a01d92m83i74n65/api/publishBlog', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id: currentRowId, bool: row.querySelector('td:nth-child(3)').textContent == 'true' })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to publish blog.');
+                }
+
+                const result = await response.json();
+                console.log(result.message);
+
+                if (row) {
+                    const publishCell = row.querySelector('td:nth-child(3)');
+                    if (publishCell) {
+                        publishCell.textContent = result.bool;
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Failed to publish blog.');
+            }
+        }
+
+        async function deleteBlog(element) {
+            try {
+                const response = await fetch('/a01d92m83i74n65/api/deleteBlog', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id: currentRowId })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to delete blog.');
+                }
+
+                const result = await response.json();
+                console.log(result.message);
+
+                const row = document.getElementById(currentRowId);
+                if (row) {
+                    row.remove();
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Failed to delete blog.');
+            }
+        }
+    </script>
 </content>
 <script>
-  // Initialize CKEditor
-  CKEDITOR.replace('editor', {
-      entities_latin: false,
-      disableNotification: true,
-      toolbar: [
-          { name: 'document', items: ['Source', '-', 'Save', 'NewPage', 'ExportPdf', 'Preview', 'Print', '-', 'Templates'] },
-          { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'] },
-          { name: 'editing', items: ['Find', 'Replace', '-', 'SelectAll', '-', 'Scayt'] },
-          { name: 'forms', items: ['Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField'] },
-          '/',
-          { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat'] },
-          { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl', 'Language'] },
-          { name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
-          { name: 'insert', items: ['Image', 'Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe'] },
-          '/',
-          { name: 'styles', items: ['Styles', 'Format', 'Font', 'FontSize'] },
-          { name: 'colors', items: ['TextColor', 'BGColor'] },
-          { name: 'tools', items: ['Maximize', 'ShowBlocks'] },
-          { name: 'about', items: ['About'] }
-      ]
-  });
+    var idInput = document.createElement('input');
+    idInput.type = 'hidden';
+    idInput.name = 'id';
 
-  const submitForm = ()=> {
-      event.preventDefault();
+    CKEDITOR.replace('editor', {
+        contentCSS: "/public/css/editor.css",
+        entities_latin: false,
+        disableNotification: true,
+        toolbar: [
+            { name: 'document', items: ['Source', '-', 'Save', 'NewPage', 'ExportPdf', 'Preview', 'Print', '-', 'Templates'] },
+            { name: 'clipboard', items: ['PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'] },
+            { name: 'editing', items: ['Find', 'Replace', '-', 'SelectAll', '-', 'Scayt'] },
+            { name: 'forms', items: ['Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField'] },
+            '/',
+            { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat'] },
+            { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl', 'Language'] },
+            { name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
+            { name: 'insert', items: ['Image', 'Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe'] },
+            '/',
+            { name: 'colors', items: ['TextColor', 'BGColor'] },
+            { name: 'tools', items: ['Maximize', 'ShowBlocks'] },
+            { name: 'about', items: ['About'] }
+        ]
+    });
 
-      document.getElementById('editor').value = CKEDITOR.instances.editor.getData().replace(/\n/g, '').trim();
+    const submitForm = () => {  
+        event.preventDefault();
 
-      const form = document.getElementById('contentForm');
-      const formData = new FormData(form);
-      const searchParams = new URLSearchParams(formData);
-      
-      fetch(form.action, {
-          method: 'POST',
-          body: searchParams,
-          headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
-          }
-      })
-      .then(response => {
-          if (!response.ok) {
-              throw new Error('Network response was not ok ' + response.statusText);
-          }
-          return response.json();
-      })
-      .then(data => {
-          if (data.success) {
-              alert(data.message);
-          } else {
-              alert('Error: ' + data.message);
-          }
-      })
-      .catch(error => {
-          console.error('Error:', error);
-          alert('An error occurred while submitting the form.');
-      });
-  };
+        document.getElementById('editor').value = CKEDITOR.instances.editor.getData().replace(/\n/g, '').trim();
+
+        const form = document.getElementById('contentForm');
+        const action = new URL(form.action)
+        if (action.pathname == "/a01d92m83i74n65/api/updateBlog") {
+            form.appendChild(idInput);
+        }
+        const formData = new FormData(form);
+        const searchParams = new URLSearchParams(formData);
+
+        fetch(form.action, {
+            method: 'POST',
+            body: searchParams,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                form.action = "/a01d92m83i74n65/submit-blog"
+                form.reset()
+                document.getElementById('submitBtn').innerText = "Pievienot"
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while submitting the form.');
+        });
+    };
 </script>

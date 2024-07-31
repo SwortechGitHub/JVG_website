@@ -58,7 +58,13 @@
       </nav>
     </aside>
     <main>
-      <%- include(content)%>
+      <% pages.forEach(page => { %>
+        <h1 id="<%= page.Title.replace(" ", "_")%>"><%= page.Title%></h1>
+        <article>
+          <%- page.Text %>
+        </article>
+        <hr>
+      <% }) %>
     </main>
   </div>
   <a href="#Logo" id="Up" class="fa-solid fa-circle-up"></a>

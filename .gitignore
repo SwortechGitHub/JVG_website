@@ -1,1 +1,4 @@
 /node_modules
+/views/home.ejs
+/views/parts
+save.txt
