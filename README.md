@@ -9,3 +9,4 @@ Servera uzstādīšana un uzsākšana:
   <li>Startēt serveri ar "node app"</li>
 </ol>
 #Serveris darbosies uz 3000 porta, lai izmainītu, jānomaina "const port" mainīgo uz vēlamo portu
+#To start the server you also need ".env" file with the following: MONGODB_URI, COOKIE_SECRET, SESSION_SECRET

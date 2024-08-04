@@ -65,27 +65,258 @@
         </details>
     <% }) %>
 </content>
+<style>
+    #pico-reference {
+        display: none;
+        position: fixed;
+        right: 0;
+        border: 1px solid #ddd;
+        padding: 5px;
+        background: #000;
+        max-height: 600px;
+        overflow-y: auto;
+        width: 50vw;
+        z-index: 10009999;
+    }
+    #pico-reference h3 {
+        margin-top: 0;
+    }
+    .cke_button_icon.cke_button__picoReferenceIcon_icon {
+        background: none;
+        color: #4e4e4e; /* Adjust color as needed */
+        font-size: 16px; /* Adjust size as needed */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
+    .cke_button_icon.cke_button__picoReferenceIcon_icon:before {
+        content: '\f02d'; /* Font Awesome Unicode for book icon */
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900; /* Ensure correct weight for the icon */
+    }
+    .example-container {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+    }
+    .example-preview, .example-code {
+        flex: 1;
+        width: 50%;
+    }
+    .example-code pre {
+        background: #f4f4f4;
+        padding: 5px;
+        border-radius: 5px;
+        overflow-x: auto;
+    }
+</style>
+<div id="pico-reference">
+    <h1>Pico CSS Pārskats</h1>
+    <p>Pico CSS ir minimalistisks CSS rāmis, kas nodrošina tīru un vienkāršu stilizāciju dažādiem HTML elementiem. Zemāk ir dažas funkcijas un komponenti, ko nodrošina Pico CSS, izņemot formas.</p>
+    <hr>
+    <section id="tipogrāfija">
+        <h2>Tipogrāfija</h2>
+        <div class="example-container">
+            <div class="example-preview">
+                <h3>Virsraksti</h3>
+                <h1>Virsraksts 1</h1>
+                <h2>Virsraksts 2</h2>
+                <h3>Virsraksts 3</h3>
+                <h4>Virsraksts 4</h4>
+                <h5>Virsraksts 5</h5>
+                <h6>Virsraksts 6</h6>
+                <h3>Paragrāfs</h3>
+                <p>Šis ir paragrāfs. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                <h3>Saraksti</h3>
+                <ul>
+                    <li>Nenumerēts saraksta elements 1</li>
+                    <li>Nenumerēts saraksta elements 2</li>
+                </ul>
+                <ol>
+                    <li>Numerēts saraksta elements 1</li>
+                    <li>Numerēts saraksta elements 2</li>
+                </ol>
+            </div>
+            <div class="example-code">
+                <pre><code>&lt;h1&gt;Virsraksts 1&lt;/h1&gt;
+&lt;h2&gt;Virsraksts 2&lt;/h2&gt;
+&lt;h3&gt;Virsraksts 3&lt;/h3&gt;
+&lt;h4&gt;Virsraksts 4&lt;/h4&gt;
+&lt;h5&gt;Virsraksts 5&lt;/h5&gt;
+&lt;h6&gt;Virsraksts 6&lt;/h6&gt;
+&lt;p&gt;Šis ir paragrāfs. Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Nenumerēts saraksta elements 1&lt;/li&gt;
+&lt;li&gt;Nenumerēts saraksta elements 2&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol&gt;
+&lt;li&gt;Numerēts saraksta elements 1&lt;/li&gt;
+&lt;li&gt;Numerēts saraksta elements 2&lt;/li&gt;
+&lt;/ol&gt;</code></pre>
+            </div>
+        </div>
+    </section>
+    <hr>
+    <section id="pogas">
+        <h2>Pogas</h2>
+        <div class="example-container">
+            <div class="example-preview">
+                <button>Noklusējuma Poga</button>
+                <button class="secondary">Sekundārā Poga</button>
+                <button class="contrast">Kontrasta Poga</button>
+            </div>
+            <div class="example-code">
+                <pre><code>&lt;button&gt;Noklusējuma Poga&lt;/button&gt;
+&lt;button class="secondary"&gt;Sekundārā Poga&lt;/button&gt;
+&lt;button class="contrast"&gt;Kontrasta Poga&lt;/button&gt;</code></pre>
+            </div>
+        </div>
+    </section>
+    <hr>
+    <section id="tabulas">
+        <h2>Tabulas</h2>
+        <div class="example-container">
+            <div class="example-preview">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Virsraksts 1</th>
+                            <th>Virsraksts 2</th>
+                            <th>Virsraksts 3</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Dati 1</td>
+                            <td>Dati 2</td>
+                            <td>Dati 3</td>
+                        </tr>
+                        <tr>
+                            <td>Dati 4</td>
+                            <td>Dati 5</td>
+                            <td>Dati 6</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="example-code">
+                <pre><code>&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+    &lt;th&gt;Virsraksts 1&lt;/th&gt;
+    &lt;th&gt;Virsraksts 2&lt;/th&gt;
+    &lt;th&gt;Virsraksts 3&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+    &lt;td&gt;Dati 1&lt;/td&gt;
+    &lt;td&gt;Dati 2&lt;/td&gt;
+    &lt;td&gt;Dati 3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td&gt;Dati 4&lt;/td&gt;
+    &lt;td&gt;Dati 5&lt;/td&gt;
+    &lt;td&gt;Dati 6&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+            </div>
+        </div>
+    </section>
+    <hr>
+    <section id="režģis">
+        <h2>Režģa Sistēma</h2>
+        <div class="example-container">
+            <div class="example-preview">
+                <div class="grid">
+                    <div>Režģa Elements 1</div>
+                    <div>Režģa Elements 2</div>
+                    <div>Režģa Elements 3</div>
+                </div>
+            </div>
+            <div class="example-code">
+                <pre><code>&lt;div class="grid"&gt;
+&lt;div&gt;Režģa Elements 1&lt;/div&gt;
+&lt;div&gt;Režģa Elements 2&lt;/div&gt;
+&lt;div&gt;Režģa Elements 3&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+            </div>
+        </div>
+    </section>
+    <hr>
+    <section id="kartes">
+        <h2>Kartes</h2>
+        <div class="example-container">
+            <div class="example-preview">
+                <article>
+                    <h3>Kartes Virsraksts 1</h3>
+                    <p>Šī ir karte ar dažiem satura elementiem.</p>
+                </article>
+            </div>
+            <div class="example-code">
+                <pre><code>&lt;article&gt;
+&lt;h3&gt;Kartes Virsraksts 1&lt;/h3&gt;
+&lt;p&gt;Šī ir karte ar dažiem satura elementiem.&lt;/p&gt;
+&lt;/article&gt;</code></pre>
+            </div>
+        </div>
+    </section>
+    <hr>
+    <section id="utilītās-klases">
+        <h2>Utilītās Klases</h2>
+        <div class="example-container">
+            <div class="example-preview">
+                <p class="text-center">Centrēts Teksts</p>
+                <p class="text-left">Kreisās Puses Teksts</p>
+                <p class="text-right">Labās Puses Teksts</p>
+                <div class="margin">Margin Utilītā Klase</div>
+                <div class="padding">Padding Utilītā Klase</div>
+            </div>
+            <div class="example-code">
+                <pre><code>&lt;p class="text-center"&gt;Centrēts Teksts&lt;/p&gt;
+&lt;p class="text-left"&gt;Kreisās Puses Teksts&lt;/p&gt;
+&lt;p class="text-right"&gt;Labās Puses Teksts&lt;/p&gt;
+&lt;div class="margin"&gt;Margin Utilītā Klase&lt;/div&gt;
+&lt;div class="padding"&gt;Padding Utilītā Klase&lt;/div&gt;</code></pre>
+            </div>
+        </div>
+    </section>
+</div>
 <script>
+    CKEDITOR.plugins.addExternal('picoReference', 'plugins/picoReference/', 'plugin.js');
     CKEDITOR.replace('editor', {
-        contentCSS: "/public/css/editor.css",
+        language: 'lv',
         entities_latin: false,
         disableNotification: true,
+        extraPlugins: 'picoReference',
         toolbar: [
-            { name: 'document', items: ['Source', '-', 'Save', 'NewPage', 'ExportPdf', 'Preview', 'Print', '-', 'Templates'] },
+            { name: 'document', items: ['Source', '-', 'Save', 'NewPage', 'ExportPdf', 'Preview', 'Print'] },
             { name: 'clipboard', items: ['PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'] },
-            { name: 'editing', items: ['Find', 'Replace', '-', 'SelectAll', '-', 'Scayt'] },
-            { name: 'forms', items: ['Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField'] },
+            { name: 'editing', items: ['Find', 'Replace', '-', 'SelectAll'] },
             '/',
             { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat'] },
-            { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl', 'Language'] },
+            { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl', 'Language'] },
             { name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
-            { name: 'insert', items: ['Image', 'Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe'] },
+            { name: 'insert', items: ['Image', 'Flash', 'Table', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe'] },
             '/',
-            { name: 'colors', items: ['TextColor', 'BGColor'] },
             { name: 'tools', items: ['Maximize', 'ShowBlocks'] },
-            { name: 'about', items: ['About'] }
-        ]
+            { name: 'about', items: ['About', 'PicoReference'] }
+        ],
+        contentsCss: ['https://unpkg.com/@picocss/pico@latest/css/pico.min.css'],
+        bodyClass: 'container',
+        extraAllowedContent: 'div[*] section[*]; article[*]; header[*]; footer[*]; p[*]; blockquote[*]; ul[*]; ol[*]; li[*]; table[*]; thead[*]; tbody[*]; tfoot[*]; tr[*]; th[*]; td[*]; img[*]; figure[*]; figcaption[*]; nav[*]; input[*]; textarea[*]; select[*]; option[*]; button[*]; fieldset[*]; legend[*]; label[*]; code[*]; pre[*]; hr[*]; a[*]; em[*]; strong[*]; small[*]; mark[*]; div[*]; span[*]; .flex; .flex-row; .flex-column; .flex-wrap; .flex-center; .flex-between; .flex-around; .text-center; .text-left; .text-right; .padding; .margin; .no-padding; .no-margin; .d-block; .d-inline-block; .d-none',
+        allowedContent: true,
+        on: {
+                instanceReady: function() {
+                    // Remove the role attribute from the toolbox
+                    const toolbox = document.getElementById('cke_1_toolbox');
+                    if (toolbox) {
+                        toolbox.removeAttribute('role');
+                    }
+                }
+            }
     });
 
     const submitForm = () => {  

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="lv" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <link rel="icon" type="image/x-icon" href="/public/files/images/logo.webp">
+  <title>Admin</title>
+  <!-- Pico CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+</head>
+<style>
+    body{
+        margin: 0; padding: 0;
+        height: 100vh; width: 100%   ;
+        overflow: hidden;
+    }
+    .container{
+        position: absolute;
+        max-width: 45em;
+        top: 10vh; left: 50vw;
+        transform: translate(-50%);
+    }
+    fieldset input{
+        width: 60%!important;
+    }
+</style>
+<body>
+    <img src="/public/files/images/top_school.webp" alt="Background" class="background-image">
+    <div class="container">
+      <article>
+        <h1>Login</h1>
+        <hr>
+        <form id="loginForm" action="/login" method="POST">
+          <label for="username">Lietotāja vārds</label>
+          <input type="text" id="username" name="username" placeholder="Lietotāja vārds" required>
+          <label for="password">Parole</label>
+          <input type="password" id="password" name="password" placeholder="Parole" required>
+          <label for="code">Kods</label>
+          <fieldset role="group">
+            <input type="text" id="code" name="code">
+            <button type="button" id="getCodeButton" disabled>Dabūt kodu</button>
+          </fieldset>
+          <button type="submit">Login</button>
+        </form>
+      </article>
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const getCodeButton = document.getElementById('getCodeButton');
+        const form = document.getElementById('loginForm');
+  
+        // Enable "Get Code" button when both username and password are filled
+        function toggleGetCodeButton() {
+          if (usernameInput.value && passwordInput.value) {
+            getCodeButton.disabled = false;
+          } else {
+            getCodeButton.disabled = true;
+          }
+        }
+  
+        usernameInput.addEventListener('input', toggleGetCodeButton);
+        passwordInput.addEventListener('input', toggleGetCodeButton);
+  
+        // Handle "Get Code" button click
+        getCodeButton.addEventListener('click', async () => {
+          const username = usernameInput.value;
+          const password = passwordInput.value;
+  
+          try {
+            const response = await fetch('/api/get-code', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ username, password })
+            });
+  
+            if (!response.ok) {
+              throw new Error('Failed to get code');
+            }
+  
+            const result = await response.json();
+            alert(`Code sent: ${result.code}`);
+          } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to get code');
+          }
+        });
+      });
+    </script>
+</body>
+</html>

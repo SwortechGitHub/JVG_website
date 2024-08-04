@@ -2,3 +2,4 @@
 /views/home.ejs
 /views/parts
 save.txt
+.env
