@@ -170,18 +170,19 @@ fastify.get("/zinas-data", async (req, reply) => {
 	}
 });
 
-// Register cookie and session plugins
-const fastifyCookie = require("@fastify/cookie");
-const fastifySession = require("@fastify/session");
+const fastifySecureSession = require("@fastify/secure-session");
 
-fastify.register(fastifyCookie, {
-	secret: process.env.COOKIE_SECRET, // Change this to a secure key
-	cookie: {secure: process.env.NODE_ENV === "production"}, // Set to true in production with HTTPS
-});
+// Define your session secret and options
+const sessionSecret = process.env.SESSION_SECRET;
 
-fastify.register(fastifySession, {
-	secret: process.env.SESSION_SECRET, // Ensure this is at least 32 characters long
-	cookie: {secure: process.env.NODE_ENV === "production"}, // Set to true in production with HTTPS
+// Register the session plugin
+fastify.register(fastifySecureSession, {
+	cookie: {
+		path: "/",
+		httpOnly: true,
+		secure: process.env.NODE_ENV === "production", // Set to true in production
+	},
+	secret: sessionSecret,
 	saveUninitialized: false,
 	resave: false,
 });
