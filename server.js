@@ -155,7 +155,7 @@ fastify.get("/zinas/:id?", async (req, reply) => {
 fastify.get("/zinas-data", async (req, reply) => {
 	try {
 		const page = parseInt(req.query.page, 10) || 1;
-		const limit = parseInt(req.query.limit, 10) || 5;
+		const limit = parseInt(req.query.limit, 10) || 8;
 		const skip = (page - 1) * limit;
 
 		const blogs = await Blogs.find({Published: true})
@@ -362,8 +362,8 @@ fastify.post("/a01d92m83i74n65/submit-blog", {
 			Type: Type,
 			Author: req.session.user.username,
 		});
-		console.log(blog);
 		try {
+			console.log("save");
 			await blog.save();
 			reply.send({success: true, message: "Form data received"});
 		} catch (err) {
@@ -463,7 +463,7 @@ fastify.post("/a01d92m83i74n65/api/getBlog", {
 			if (!blog) {
 				return reply.status(404).send({message: "Blog not found"});
 			}
-			reply.send(blog);
+			reply.status(200).send(blog);
 		} catch (err) {
 			console.error(err);
 			reply.status(500).send({message: "Internal Server Error"});

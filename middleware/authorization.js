@@ -1,7 +1,7 @@
 const Users = require("../schemas/user");
 // middleware/authorization.js
 const isAuthorized = (permissions) => {
-	return async (req, reply, done) => {
+	return async (req, reply) => {
 		const user = req.session.user;
 
 		if (!user) {
@@ -22,8 +22,6 @@ const isAuthorized = (permissions) => {
 			if (!hasPermission) {
 				return reply.status(403).send({error: "Insufficient permissions"});
 			}
-
-			done();
 		} catch (err) {
 			reply.status(500).send({error: "Internal Server Error"});
 		}

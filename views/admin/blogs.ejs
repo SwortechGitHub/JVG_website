@@ -102,7 +102,7 @@
                 document.getElementById('T2').value = blog.Type;
                 document.getElementById('ED').value = blog.EventDate ? blog.EventDate.slice(0, 16) : "";
                 document.getElementById('D').value = blog.Date.slice(0, 10);
-                document.getElementById('I').value = blog.Img;
+                // document.getElementById('I').value = blog.Img;
                 CKEDITOR.instances.editor.setData(blog.Text);
                 document.getElementById('P').checked = blog.Published;
                 document.getElementById('contentForm').action = "/a01d92m83i74n65/api/updateBlog";
@@ -110,7 +110,7 @@
                 idInput.value = currentRowId;
             } catch (error) {
                 console.error(error);
-                alert('Failed to fetch blog information.');
+                alert('Failed to put blog information');
             }
         }
 
@@ -384,6 +384,7 @@
     });
 
     const submitForm = () => {  
+        console.log('Send');
         event.preventDefault();
 
         document.getElementById('editor').value = CKEDITOR.instances.editor.getData().replace(/\n/g, '').trim();
