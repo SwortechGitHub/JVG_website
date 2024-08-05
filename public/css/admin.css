@@ -73,3 +73,8 @@ a{
     background-color: rgb(227, 227, 227);
     color: rgb(123, 2, 2);
 }
+
+#Logout{
+    background-color: rgb(194, 11, 11);
+    border: none;
+}

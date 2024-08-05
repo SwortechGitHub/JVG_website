@@ -215,6 +215,7 @@ footer{
     background-color: #3d0101;
     display: flex;
     justify-content: space-around;
+    box-shadow: 0 50vh 0 50vh #3d0101;
 }
 footer *{
     color: #ffffffdd;

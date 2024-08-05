@@ -189,7 +189,7 @@ fastify.register(fastifySecureSession, {
 
 fastify.post("/logout", (req, reply) => {
 	req.session.user = null;
-	reply.send({success: true, message: "Logged out successfully"});
+	reply.redirect("/");
 });
 
 // Admin routes
