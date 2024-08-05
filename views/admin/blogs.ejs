@@ -50,10 +50,10 @@
     </table>
     <div class="context-menu" id="contextMenu">
         <ul>
-            <li onclick="edit(this)">Edit</li>
+            <li onclick="edit(this)">Izmainīt saturu</li>
             <li onclick="publish(this)" id="CM_publish">Atpublicēt</li>
-            <li>Apskatīties</li>
-            <li onclick="deleteBlog(this)">Delete</li>
+            <li onclick="view()">Apskatīties</li>
+            <li onclick="deleteBlog(this)">Dzēst</li>
         </ul>
     </div>
     <script defer>
@@ -169,6 +169,9 @@
                 console.error(error);
                 alert('Failed to delete blog.');
             }
+        }
+        function view(){
+            window.open("/zinas/"+currentRowId);
         }
     </script>
 </content>

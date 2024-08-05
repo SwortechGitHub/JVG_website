@@ -126,7 +126,7 @@
 
         async function fetchBlogs(page) {
           try {
-            const response = await fetch(`/zinas-data?page=${page}&limit=5`);
+            const response = await fetch(`/zinas-data?page=${page}&limit=8`);
             if (!response.ok) {
               throw new Error('Network response was not ok');
             }
