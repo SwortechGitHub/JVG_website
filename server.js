@@ -90,7 +90,7 @@ function updateViewsCount(title) {
 	}
 }
 
-// Define routes
+//-------------------------------------------------------------------------------------Define routes
 fastify.get("/", (req, reply) => {
 	updateViewsCount("Home");
 	renderAndCache(reply, "Home", "Home");
@@ -170,6 +170,7 @@ fastify.get("/zinas-data", async (req, reply) => {
 	}
 });
 
+//--------------------------------------------------------------------------------------Admin routes
 const fastifySecureSession = require("@fastify/secure-session");
 
 // Define your session secret and options
@@ -180,7 +181,7 @@ fastify.register(fastifySecureSession, {
 	cookie: {
 		path: "/",
 		httpOnly: true,
-		secure: process.env.NODE_ENV === "production", // Set to true in production
+		secure: process.env.NODE_ENV === "production",
 	},
 	secret: sessionSecret,
 	saveUninitialized: false,
@@ -192,7 +193,6 @@ fastify.post("/logout", (req, reply) => {
 	reply.redirect("/");
 });
 
-// Admin routes
 fastify.get("/login", (req, reply) => {
 	ejs.renderFile("views/login.ejs", {}, {}, (err, str) => {
 		if (err) {
@@ -360,7 +360,7 @@ fastify.post("/a01d92m83i74n65/submit-blog", {
 			EventDate: EDate,
 			Date: Date,
 			Type: Type,
-			Author: "me",
+			Author: req.session.user.username,
 		});
 		console.log(blog);
 		try {
@@ -387,7 +387,7 @@ fastify.post("/a01d92m83i74n65/submit-page", {
 				Order: order,
 				Img: Image || "/public/files/images/none.webp",
 				Text: Content,
-				Author: "me",
+				Author: req.session.user.username,
 			});
 			await page.save();
 			cache.del(Section);
@@ -486,7 +486,7 @@ fastify.post("/a01d92m83i74n65/api/updateBlog", {
 					EventDate: EDate,
 					Date: Date,
 					Type: Type,
-					Author: "me",
+					Author: req.session.user.username,
 				},
 				{new: false},
 			).exec();

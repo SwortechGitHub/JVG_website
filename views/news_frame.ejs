@@ -28,6 +28,7 @@
   <!-- Pico CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
   <!-- STYLES -->
+  <link rel="stylesheet" href="/public/css/color.css">
   <link href="/public/css/main.css" rel="stylesheet" />
 </head>
 <body>
@@ -61,6 +62,9 @@
     </aside>
     <main>
       <style>
+        #content{
+          background-color: transparent;
+        }
         main{
           padding: 0; margin: 0;  
         }
@@ -116,7 +120,7 @@
       <% if (typeof blog === 'undefined') { %>
       <div id="blogs-container">
       </div>
-      <button id="load-more-blogs" onclick="LoadBlogs()">Load More Blogs</button>
+      <div class="center-container"><button id="load-more-blogs" onclick="LoadBlogs()">Load More Blogs</button></div>
       <script>
         let currentPage = 1;
 

@@ -1,4 +1,4 @@
-<form id="userForm" action="/a01d92m83i74n65/submit-user" method="post" style="display: flex; flex-direction: column;">
+<form id="contentForm" action="/a01d92m83i74n65/submit-user" method="post" style="display: flex; flex-direction: column;">
     <label for="username">Lietotājvārds:</label>
     <input type="text" name="username" id="username" required>
 
@@ -18,13 +18,13 @@
     <label for="editablePageId">Mainīt lapu saturu Page ID (Interešu izglītas skolotājam):</label>
     <input type="text" name="editablePageId" id="editablePageId">
 
-    <button type="submit" id="submitBtn" onclick="submitForm()">Pievienot</button>
+    <button type="submit" id="submitBtn" onclick="submitForm()" class="secondary">Pievienot</button>
 </form>
 <script>
     const submitForm = (event) => {
         event.preventDefault();
 
-        const form = document.getElementById('userForm');
+        const form = document.getElementById('contentForm');
         const formData = new FormData(form);
         const searchParams = new URLSearchParams(formData);
 

@@ -1,9 +1,3 @@
-<script>
-    window.onload = function() {
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('D').value = today;
-    };
-</script>
 <form id="contentForm" action="/a01d92m83i74n65/submit-page" method="post" style="display: flex; flex-direction: column;">
     <label for="S1">Sadaļa:</label>
     <select name="Section" id="S">
@@ -24,18 +18,8 @@
     <!-- <label for="I1">Attēls (Ja veids NAV teksts):</label>
     <input type="text" name="Image" id="I1"> -->
     <textarea id="editor" name="Content"></textarea>
-    <button type="submit" id="submitBtn" onclick="submitForm()">Pievienot</button>
+    <button class="secondary" type="submit" id="submitBtn" onclick="submitForm()">Pievienot</button>
 </form>
-<style>
-    table{
-        margin: 0;
-        padding: 0;
-    }
-    details{
-        margin: 5px 10px;
-        padding: 0;
-    }
-</style>
 <content style="min-width: 65vw;">
     <% Object.keys(groupedPages).forEach(section => { %>
         <details>
@@ -65,52 +49,6 @@
         </details>
     <% }) %>
 </content>
-<style>
-    #pico-reference {
-        display: none;
-        position: fixed;
-        right: 0;
-        border: 1px solid #ddd;
-        padding: 5px;
-        background: #000;
-        max-height: 600px;
-        overflow-y: auto;
-        width: 50vw;
-        z-index: 10009999;
-    }
-    #pico-reference h3 {
-        margin-top: 0;
-    }
-    .cke_button_icon.cke_button__picoReferenceIcon_icon {
-        background: none;
-        color: #4e4e4e; /* Adjust color as needed */
-        font-size: 16px; /* Adjust size as needed */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .cke_button_icon.cke_button__picoReferenceIcon_icon:before {
-        content: '\f02d'; /* Font Awesome Unicode for book icon */
-        font-family: 'Font Awesome 5 Free';
-        font-weight: 900; /* Ensure correct weight for the icon */
-    }
-    .example-container {
-        display: flex;
-        gap: 10px;
-        align-items: flex-start;
-    }
-    .example-preview, .example-code {
-        flex: 1;
-        width: 50%;
-    }
-    .example-code pre {
-        background: #f4f4f4;
-        padding: 5px;
-        border-radius: 5px;
-        overflow-x: auto;
-    }
-</style>
 <div id="pico-reference">
     <h1>Pico CSS Pārskats</h1>
     <p>Pico CSS ir minimalistisks CSS rāmis, kas nodrošina tīru un vienkāršu stilizāciju dažādiem HTML elementiem. Zemāk ir dažas funkcijas un komponenti, ko nodrošina Pico CSS, izņemot formas.</p>

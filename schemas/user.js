@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema({
 		default: "klase", // Default role can be set as needed
 	},
 	permissions: {
+		canMakeUsers: {type: Boolean, default: false},
 		canMakePages: {type: Boolean, default: false},
 		canEditPages: {type: Boolean, default: false},
 		canDeletePages: {type: Boolean, default: false},

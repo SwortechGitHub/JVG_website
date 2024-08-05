@@ -23,7 +23,7 @@
   <label for="P">Publicēt?
       <input type="checkbox" style="height: 90% !important;" name="Publish" id="P">
   </label>
-  <button type="submit" id="submitBtn" onclick="submitForm()">Pievienot</button>
+  <button class="secondary" type="submit" id="submitBtn" onclick="submitForm()">Pievienot</button>
 </form>
 <content  style="min-width: 65vw;">
     <table>
@@ -172,48 +172,6 @@
         }
     </script>
 </content>
-<style>
-    #pico-reference {
-        display: none;
-        position: fixed;
-        top: 0;
-        right: 0;
-        border: 1px solid #ddd;
-        padding: 5px;
-        background: var(--pico-background-color);
-        height: 100vh;
-        overflow-y: auto;
-        width: 70vw;
-        z-index: 10009999;
-    }
-    .cke_button_icon.cke_button__picoReferenceIcon_icon {
-        background: none;
-        font-size: 16px; /* Adjust size as needed */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .cke_button_icon.cke_button__picoReferenceIcon_icon:before {
-        content: '\f02d'; /* Font Awesome Unicode for book icon */
-        font-family: 'Font Awesome 5 Free';
-        font-weight: 900; /* Ensure correct weight for the icon */
-    }
-    .example-container {
-        display: flex;
-        gap: 10px;
-        align-items: flex-start;
-    }
-    .example-preview, .example-code {
-        flex: 1;
-        width: 50%;
-    }
-    .example-code pre {
-        padding: 5px;
-        border-radius: 5px;
-        overflow-x: auto;
-    }
-</style>
 <div id="pico-reference">
     <h1>Pico CSS Pārskats</h1>
     <p>Pico CSS ir minimalistisks CSS rāmis, kas nodrošina tīru un vienkāršu stilizāciju dažādiem HTML elementiem. Zemāk ir dažas funkcijas un komponenti, ko nodrošina Pico CSS, izņemot formas.</p>
