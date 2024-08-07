@@ -7,6 +7,7 @@
   <meta name="description" content="Jēkabpils Valsts ģimnāzija - mācību iespējas, skolotāju saraksts, skolēnu informācija.">
   <meta name="keywords" content="Jēkabpils, Valsts ģimnāzija, mācības, skolotāji, skolēni">
   <link rel="icon" type="image/x-icon" href="/public/files/images/logo.webp">
+  <link rel="apple-touch-icon" href="/public/files/images/logo.webp">
   <title>JVĢ</title>
   <!-- SCRIPTS -->
   <script src="/public/js/index.js"></script>
@@ -54,115 +55,42 @@
     </ul>
   </nav>
   <div id="Content">
-    <aside>
-      <nav>
-        <ul id="Sidebar-list">
-        </ul>
-      </nav>
-    </aside>
-    <main>
-      <style>
-        #content{
-          background-color: transparent;
-        }
-        main{
-          padding: 0; margin: 0;  
-        }
-        aside {
-          display: none;
-        }
-        #blogs-container .blog-text {
-          display: flex;
-          flex-flow: column wrap;
-          overflow: hidden;
-          height: 4.4em;
-          margin-bottom: 10px;
-        }
-        #blogs-container *{
-          color: var(--h1-color);
-          text-decoration: none;
-        }
-        #blogs-container .blog-text img {
-          display: none;
-        }
-        #blogs-container article h4{
-          margin: 0;
-        }
-        #blogs-container article{
-          flex: 1;
-          margin: 10px;
-          min-width: 268px;
-          max-width: 500px;
-          cursor: pointer;
-        }
-        #blogs-container {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 20px;
-        }
-        #load-more-blogs{
-          color: white;
-        }
-      </style>
-      <main id="main-content">
-        <% if (typeof blog !== 'undefined') { %>
+    <main class="container">
+      <% if (typeof blogs !== 'undefined') { %>
+        <% 
+          const blogsByMonth = blogs.reduce((acc, blog) => {
+            const monthYear = new Date(blog.Date).toLocaleString('lv-LV', { month: 'long', year: 'numeric' });
+            if (!acc[monthYear]) acc[monthYear] = [];
+            acc[monthYear].push(blog);
+            return acc;
+          }, {});
+
+          for (let month in blogsByMonth) { 
+        %>
           <article>
+            <h2><%= month %></h2>
+            <ul>
+              <% blogsByMonth[month].forEach(blog => { %>
+                <li>
+                  <a href="/zinas/<%= blog._id %>"><%= blog.Title %></a>
+                  <span class="tag" data-tag="<%= blog.Type %>"><%= blog.Type %></span>
+                  <span class="tag" data-tag="Author"><%= blog.Author %></span>
+                </li>
+              <% }); %>
+            </ul>
+          </article>
+        <% } %>
+      <% }else{%>
+        <article>
             <h2><%= blog.Title %></h2>
+            <hr>
             <div><%- blog.Text %></div>
             <hr>
-            <p4>Publicēts: <time datetime="<%= blog.Date %>"><%= blog.Date.toISOString().split("T")[0] %></time></p4>
-            <% if (blog.EventDate) { %>
-              <br><p5>Notiks: <time datetime="<%= blog.EventDate %>"><%= blog.EventDate.toISOString().split(".")[0].replace("T", " / ") %></time></p5>
-            <% } %>
+            <p4>Publicēts: <time datetime="<%= blog.Date %>"><%= blog.Date.toLocaleString('lv-LV',{ year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' })%></time></p4>
+            <br>
+            <p4>Autors: <%= blog.Author%></p4>
           </article>
-        <% }%>
-      </main>
-      <% if (typeof blog === 'undefined') { %>
-      <div id="blogs-container">
-      </div>
-      <div class="center-container"><button id="load-more-blogs" onclick="LoadBlogs()">Load More Blogs</button></div>
-      <script>
-        let currentPage = 1;
-
-        async function fetchBlogs(page) {
-          try {
-            const response = await fetch(`/zinas-data?page=${page}&limit=8`);
-            if (!response.ok) {
-              throw new Error('Network response was not ok');
-            }
-            const blogs = await response.json();
-            const blogsContainer = document.getElementById('blogs-container');
-
-            blogs.forEach(blog => {
-              const blogElement = document.createElement('article');
-              blogElement.innerHTML = `
-                <header>
-                <h4>${blog.Title}</h4>
-                </header>
-                <div class="blog-text" data-blog-id="${blog._id}">${blog.Text}</div>
-                <hr>
-                <p4>Publicēts: <time datetime="${blog.Date}">${blog.Date.split("T")[0]}</time></p4>
-                ${blog.EventDate ? `<br><p4 class="prime">Notiks: <time datetime="${blog.EventDate}">${blog.EventDate.split(".")[0].replace("T", " / ")}</time></p4>` : ''}
-              `;
-              blogsContainer.appendChild(blogElement);
-              blogElement.addEventListener('click', function() {
-                window.location.href = `/zinas/${blog._id}`;
-              });
-            });
-          } catch (error) {
-            console.error('Error fetching blogs:', error);
-            const blogsContainer = document.getElementById('blogs-container');
-            blogsContainer.innerHTML = '<p>Failed to load blogs. Please try again later.</p>';
-          }
-        }
-
-        function LoadBlogs(){
-          currentPage++;
-          fetchBlogs(currentPage);
-        }
-        fetchBlogs(currentPage);
-      </script>
-      <% }%>
+      <% } %>
     </main>
   </div>
   <a href="#Logo" id="Up" class="fa-solid fa-circle-up" aria-label="Go to Top"></a>

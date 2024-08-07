@@ -1,26 +1,26 @@
 :root:not([data-theme=dark]), [data-theme=light] {
     --border-width: 1.5px!important;    
     --pico-text-selection-color: hsl(355, 40%, 90%);
-    --pico-primary: hsl(355, 100%, 42%);
+    --pico-primary: hsl(5, 100%, 38%);
     --pico-secondary-background: 	hsl(188, 100%, 42%);
-    --pico-primary-background: hsl(355, 100%, 45%);
-    --pico-primary-underline: hsl(355, 100%, 45%);
-    --pico-primary-hover: hsl(355, 70%, 30%);
-    --pico-primary-hover-background: hsl(355, 70%, 40%);
-    --pico-primary-focus: hsl(355, 100%, 45%);
+    --pico-primary-background: hsl(5, 100%, 45%);
+    --pico-primary-underline: hsl(5, 100%, 45%);
+    --pico-primary-hover: hsl(5, 70%, 30%);
+    --pico-primary-hover-background: hsl(5, 70%, 40%);
+    --pico-primary-focus: hsl(5, 100%, 45%);
     --pico-primary-inverse: hsl(175, 100%, 58%);
-    --primary-dark: hsl(355, 100%, 10%);
+    --primary-dark: hsl(5, 100%, 10%);
 }
 :root:not([data-theme=light]), [data-theme=dark] {
     --border-width: 1.5px!important;
-    --pico-text-selection-color: hsl(355, 100%, 45%);
-    --pico-primary: hsl(355, 100%, 42%);
+    --pico-text-selection-color: hsl(5, 100%, 45%);
+    --pico-primary: hsl(5, 100%, 42%);
     --pico-secondary-background: 	hsl(188, 100%, 42%);
-    --pico-primary-background: hsl(355, 100%, 45%);
-    --pico-primary-underline: hsl(355, 100%, 45%);
-    --pico-primary-hover: hsl(355, 100%, 45%);
-    --pico-primary-hover-background: hsl(355, 100%, 45%);
-    --pico-primary-focus: hsl(355, 100%, 45%);
+    --pico-primary-background: hsl(5, 100%, 45%);
+    --pico-primary-underline: hsl(5, 100%, 45%);
+    --pico-primary-hover: hsl(5, 100%, 45%);
+    --pico-primary-hover-background: hsl(5, 100%, 45%);
+    --pico-primary-focus: hsl(5, 100%, 45%);
     --pico-primary-inverse: hsl(175, 100%, 58%);
 }
 button{

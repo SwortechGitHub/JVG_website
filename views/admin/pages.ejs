@@ -40,7 +40,7 @@
                             <td><%= page.Order %></td>
                             <td><%= page.Title %></td>
                             <td><%= page.Type %></td>
-                            <td><%= page.Date.toDateString() %></td>
+                            <td><%= page.Date.toLocaleString('lv-LV', { month: 'long', year: 'numeric' }) %></td>
                             <td><%= page.Author %></td>
                         </tr>
                     <% }) %>
@@ -228,7 +228,7 @@
         language: 'lv',
         entities_latin: false,
         disableNotification: true,
-        extraPlugins: 'picoReference',
+        extraPlugins: 'picoReference,lightbox,iframe',
         toolbar: [
             { name: 'document', items: ['Source', '-', 'Save', 'NewPage', 'ExportPdf', 'Preview', 'Print'] },
             { name: 'clipboard', items: ['PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'] },
@@ -236,18 +236,19 @@
             '/',
             { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat'] },
             { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl', 'Language'] },
-            { name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
-            { name: 'insert', items: ['Image', 'Flash', 'Table', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe'] },
+            { name: 'links', items: ['Link', 'Unlink', 'Anchor', 'lightbox'] },
+            { name: 'insert', items: ['Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe'] },
             '/',
             { name: 'tools', items: ['Maximize', 'ShowBlocks'] },
             { name: 'about', items: ['About', 'PicoReference'] }
         ],
         contentsCss: ['https://unpkg.com/@picocss/pico@latest/css/pico.min.css'],
         bodyClass: 'container',
-        extraAllowedContent: 'div[*] section[*]; article[*]; header[*]; footer[*]; p[*]; blockquote[*]; ul[*]; ol[*]; li[*]; table[*]; thead[*]; tbody[*]; tfoot[*]; tr[*]; th[*]; td[*]; img[*]; figure[*]; figcaption[*]; nav[*]; input[*]; textarea[*]; select[*]; option[*]; button[*]; fieldset[*]; legend[*]; label[*]; code[*]; pre[*]; hr[*]; a[*]; em[*]; strong[*]; small[*]; mark[*]; div[*]; span[*]; .flex; .flex-row; .flex-column; .flex-wrap; .flex-center; .flex-between; .flex-around; .text-center; .text-left; .text-right; .padding; .margin; .no-padding; .no-margin; .d-block; .d-inline-block; .d-none',
+        extraAllowedContent: 'a[data-lightbox,data-title,data-lightbox-saved] div[*] section[*]; article[*]; header[*]; footer[*]; p[*]; blockquote[*]; ul[*]; ol[*]; li[*]; table[*]; thead[*]; tbody[*]; tfoot[*]; tr[*]; th[*]; td[*]; img[*]; figure[*]; figcaption[*]; nav[*]; input[*]; textarea[*]; select[*]; option[*]; button[*]; fieldset[*]; legend[*]; label[*]; code[*]; pre[*]; hr[*]; a[*]; em[*]; strong[*]; small[*]; mark[*]; div[*]; span[*]; .flex; .flex-row; .flex-column; .flex-wrap; .flex-center; .flex-between; .flex-around; .text-center; .text-left; .text-right; .padding; .margin; .no-padding; .no-margin; .d-block; .d-inline-block; .d-none',
         allowedContent: true,
         on: {
                 instanceReady: function() {
+                    this.document.appendStyleText('body.container { margin: 0 !important; }');
                     // Remove the role attribute from the toolbox
                     const toolbox = document.getElementById('cke_1_toolbox');
                     if (toolbox) {

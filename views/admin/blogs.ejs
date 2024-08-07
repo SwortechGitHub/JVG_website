@@ -9,9 +9,9 @@
   <input type="text" name="Title" id="T1" required>
   <label for="T2">Veids:</label>
   <select name="Type" id="T2">
-    <option value="N">Notikums</option>
-    <option value="LD">Labais darbs</option>
-    <option value="LSS">Latvijas skolas soma</option>
+    <option value="Notikums">Notikums</option>
+    <option value="Labais darbs">Labais darbs</option>
+    <option value="Latvijas skolas soma">Latvijas skolas soma</option>
   </select>
   <label for="ED">Notikuma datums (Nav obligāts):</label>
   <input type="datetime-local" name="EDate" id="ED">
@@ -26,36 +26,42 @@
   <button class="secondary" type="submit" id="submitBtn" onclick="submitForm()">Pievienot</button>
 </form>
 <content  style="min-width: 65vw;">
-    <table>
-        <thead>
-            <tr>
-                <th>Virsraksts</th>
-                <th>Veids</th>
-                <th>Publicēts</th>
-                <th>Datums</th>
-                <th>Autors</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% blogs.forEach(blog => { %>
-                <tr id="<%= blog._id%>">
-                    <td><%= blog.Title %></td>
-                    <td><%= blog.Type %></td>
-                    <td><%= blog.Published %></td>
-                    <td><%= blog.Date.toDateString()%></td>
-                    <td><%= blog.Author %></td>
-                </tr>
-            <% }) %>
-        </tbody>
-    </table>
-    <div class="context-menu" id="contextMenu">
-        <ul>
-            <li onclick="edit(this)">Izmainīt saturu</li>
-            <li onclick="publish(this)" id="CM_publish">Atpublicēt</li>
-            <li onclick="view()">Apskatīties</li>
-            <li onclick="deleteBlog(this)">Dzēst</li>
-        </ul>
-    </div>
+    <% Object.keys(groupedByType).forEach(type => { %>
+        <details>
+            <summary role="button" class="outline"><%= type %></summary>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Virsraksts</th>
+                        <th>Veids</th>
+                        <th>Publicēts</th>
+                        <th>Datums</th>
+                        <th>Autors</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% groupedByType[type].forEach(blog => { %>
+                        <tr id="<%= blog._id %>">
+                            <td><%= blog.Title %></td>
+                            <td><%= blog.Type %></td>
+                            <td><%= blog.Published %></td>
+                            <td><%= blog.Date.toLocaleDateString('lv-LV', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' }) %></td>
+                            <td><%= blog.Author %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </details>
+    <% }) %>
+    
+<div class="context-menu" id="contextMenu">
+    <ul>
+        <li onclick="edit(this)">Izmainīt saturu</li>
+        <li onclick="publish(this)" id="CM_publish">Atpublicēt</li>
+        <li onclick="view()">Apskatīties</li>
+        <li onclick="deleteBlog(this)">Dzēst</li>
+    </ul>
+</div>
     <script defer>
         let currentRowId = null;
 
@@ -357,7 +363,7 @@
         language: 'lv',
         entities_latin: false,
         disableNotification: true,
-        extraPlugins: 'picoReference',
+        extraPlugins: 'picoReference,lightbox,iframe',
         toolbar: [
             { name: 'document', items: ['Source', '-', 'Save', 'NewPage', 'ExportPdf', 'Preview', 'Print'] },
             { name: 'clipboard', items: ['PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'] },
@@ -365,18 +371,19 @@
             '/',
             { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat'] },
             { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl', 'Language'] },
-            { name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
-            { name: 'insert', items: ['Image', 'Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe'] },
+            { name: 'links', items: ['Link', 'Unlink', 'Anchor', 'lightbox'] },
+            { name: 'insert', items: ['Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe'] },
             '/',
             { name: 'tools', items: ['Maximize', 'ShowBlocks'] },
             { name: 'about', items: ['About', 'PicoReference'] }
         ],
         contentsCss: ['https://unpkg.com/@picocss/pico@latest/css/pico.min.css'],
         bodyClass: 'container',
-        extraAllowedContent: 'div[*] section[*]; article[*]; header[*]; footer[*]; p[*]; blockquote[*]; ul[*]; ol[*]; li[*]; table[*]; thead[*]; tbody[*]; tfoot[*]; tr[*]; th[*]; td[*]; img[*]; figure[*]; figcaption[*]; nav[*]; input[*]; textarea[*]; select[*]; option[*]; button[*]; fieldset[*]; legend[*]; label[*]; code[*]; pre[*]; hr[*]; a[*]; em[*]; strong[*]; small[*]; mark[*]; div[*]; span[*]; .flex; .flex-row; .flex-column; .flex-wrap; .flex-center; .flex-between; .flex-around; .text-center; .text-left; .text-right; .padding; .margin; .no-padding; .no-margin; .d-block; .d-inline-block; .d-none',
+        extraAllowedContent: 'a[data-lightbox,data-title,data-lightbox-saved] div[*] section[*]; article[*]; header[*]; footer[*]; p[*]; blockquote[*]; ul[*]; ol[*]; li[*]; table[*]; thead[*]; tbody[*]; tfoot[*]; tr[*]; th[*]; td[*]; img[*]; figure[*]; figcaption[*]; nav[*]; input[*]; textarea[*]; select[*]; option[*]; button[*]; fieldset[*]; legend[*]; label[*]; code[*]; pre[*]; hr[*]; a[*]; em[*]; strong[*]; small[*]; mark[*]; div[*]; span[*]; .flex; .flex-row; .flex-column; .flex-wrap; .flex-center; .flex-between; .flex-around; .text-center; .text-left; .text-right; .padding; .margin; .no-padding; .no-margin; .d-block; .d-inline-block; .d-none',
         allowedContent: true,
         on: {
                 instanceReady: function() {
+                    this.document.appendStyleText('body.container { margin: 0 !important; }');
                     // Remove the role attribute from the toolbox
                     const toolbox = document.getElementById('cke_1_toolbox');
                     if (toolbox) {

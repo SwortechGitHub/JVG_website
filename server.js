@@ -117,6 +117,7 @@ fastify.get("/skoleniem", (req, reply) => {
 });
 
 fastify.get("/zinas/:id?", async (req, reply) => {
+	updateViewsCount("Ziņas");
 	try {
 		const blogId = req.params.id;
 
@@ -137,39 +138,30 @@ fastify.get("/zinas/:id?", async (req, reply) => {
 				}
 			});
 		} else {
-			// Render the list of blogs
-			ejs.renderFile("views/news_frame.ejs", {}, {}, (err, str) => {
-				if (err) {
-					reply.status(500).send(`Error rendering EJS: ${err}`);
-				} else {
-					reply.type("text/html").send(str);
-				}
-			});
+			try {
+				const blogs = await Blogs.find(
+					{Published: true},
+					"_id Title Date Type Author",
+				)
+					.sort({Date: -1})
+					.exec();
+				ejs.renderFile("views/news_frame.ejs", {blogs}, {}, (err, str) => {
+					if (err) {
+						reply.status(500).send(`Error rendering EJS: ${err}`);
+					} else {
+						reply.type("text/html").send(str);
+					}
+				});
+			} catch (err) {
+				console.error(err);
+				reply.status(500).type("application/json").send("");
+			}
 		}
 	} catch (err) {
 		console.error(err);
 		reply.status(500).send("Internal Server Error");
 	}
 });
-
-fastify.get("/zinas-data", async (req, reply) => {
-	try {
-		const page = parseInt(req.query.page, 10) || 1;
-		const limit = parseInt(req.query.limit, 10) || 8;
-		const skip = (page - 1) * limit;
-
-		const blogs = await Blogs.find({Published: true})
-			.sort({Date: -1})
-			.skip(skip)
-			.limit(limit)
-			.exec();
-		reply.type("application/json").send(blogs);
-	} catch (err) {
-		console.error(err);
-		reply.status(500).type("application/json").send("");
-	}
-});
-
 //--------------------------------------------------------------------------------------Admin routes
 const fastifySecureSession = require("@fastify/secure-session");
 
@@ -183,6 +175,7 @@ fastify.register(fastifySecureSession, {
 		httpOnly: true,
 		secure: process.env.NODE_ENV === "production",
 	},
+	expiry: 5 * 60 * 60, // expire in 5 hours
 	secret: sessionSecret,
 	saveUninitialized: false,
 	resave: false,
@@ -253,11 +246,15 @@ fastify.get(
 			const blogs = await Blogs.find({}, "_id Title Published Date Type Author")
 				.sort({Date: -1})
 				.exec();
+			const groupedByType = blogs.reduce((acc, blog) => {
+				(acc[blog.Type] = acc[blog.Type] || []).push(blog);
+				return acc;
+			}, {});
 			ejs.renderFile(
 				"views/admin.ejs",
 				{
 					content: "admin/blogs",
-					blogs: blogs,
+					groupedByType,
 				},
 				{},
 				(err, str) => {

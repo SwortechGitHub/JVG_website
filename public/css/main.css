@@ -6,6 +6,17 @@ a{
     justify-content: center;
     align-items: center;
 }
+.tag{
+    background-color: var(--c);
+    color: #fff;
+    border-radius: 10px;
+    padding: 3px;
+    font-size: medium;
+}
+[data-tag="Notikums"]{--c: green}
+[data-tag="Labais darbs"]{--c: #d3d000}
+[data-tag="Latvijas skolas soma"]{--c: #3D7CC9}
+[data-tag="Author"]{--c: orange}
 /*------------------Section-----------------*/
 #Content{
     display: flex;
