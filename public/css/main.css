@@ -13,10 +13,13 @@ a{
     padding: 3px;
     font-size: medium;
 }
-[data-tag="Notikums"]{--c: green}
-[data-tag="Labais darbs"]{--c: #d3d000}
-[data-tag="Latvijas skolas soma"]{--c: #3D7CC9}
-[data-tag="Author"]{--c: orange}
+[data-tag="Notikums"]{--c: #26a400d9}
+[data-tag="Labais darbs"]{--c: #d3cf00d9}
+[data-tag="Latvijas skolas soma"]{--c: #3D7CC9d9}
+[data-tag="Author"]{--c: #d9d200d9}
+#Content h1{
+    margin-bottom: 15px!important;
+}
 /*------------------Section-----------------*/
 #Content{
     display: flex;
@@ -46,22 +49,25 @@ body > nav{
 #Logo{
     display: flex;
     height: 100%;
-}
-#Logo img{
     padding:  10px 0;
 }
 hgroup{
-    margin-top:auto;
+    margin: 0;
 }
-#Logo hgroup *{
+hgroup *{
     margin: 0;
     padding: 0;
-    font-size: 1em;
-    line-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
     color: #fff;
 }
-#Logo hgroup h3{
-    font-size: 1.5em;
+hgroup p{
+    font-weight: 100;
+    line-height: 0.8em;
+}
+hgroup h1{
+    font-size: 1.5em!important; 
 }
 
 body > nav #Menu a{
