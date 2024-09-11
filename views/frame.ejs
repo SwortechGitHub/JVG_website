@@ -1,92 +1,82 @@
 <!DOCTYPE html>
-<html lang="lv" data-theme="light">
+<html lang="lv">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <link rel="icon" type="image/x-icon" href="/public/files/images/logo.webp">
   <link rel="apple-touch-icon" href="/public/files/images/logo.webp">
-  <title>JVĢ</title>
-  <!-- SCRIPTS -->
-  <script src="/public/js/index.js"></script>
+  <title><%= pageTitle%></title>
+  <!--Font-->
+  <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+  <!-- CSS -->
+  <link rel="stylesheet" href="public/css/color.css">
+  <link rel="stylesheet" href="public/css/main.css">
+  <!-- JS -->
+  <script defer src="public/js/index.js"></script>
+  <script defer src="public/js/smooth.js"></script>
+  <!-- Icons -->
   <script src="https://kit.fontawesome.com/74e30751de.js" crossorigin="anonymous"></script>
-  <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
   <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <!-- Lightbox CSS -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
-  <!-- Lightbox JS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
-  <script>
-    lightbox.option({
-      'resizeDuration': 200,
-      'wrapAround': true,
-      'disableScrolling': true
-    })
-  </script>
-  <!-- Pico CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
-  <!-- STYLES -->
-  <link rel="stylesheet" href="/public/css/color.css">
-  <link href="/public/css/main.css" rel="stylesheet" />
+  <!--Sortable-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
 </head>
 <body>
   <nav>
     <ul>
-      <a id="Logo" href="/">
-        <img src="/public/files/images/logo.webp" />
-        <hgroup>
-          <h1>Jēkabpils</h1>
-          <p><small>Valsts ģimnāzija</small></p>
-        </hgroup>
-      </a>
-    </ul>
-    <ul>
-      <li><button onclick="PhoneMenu()" id="PhoneMenu" class="fa-solid fa-bars"></button></li>
-    </ul>
-    <ul id="Menu">
-      <li><a href="/parskolu" data-page="parskolu" >Par skolu</a></li>
-      <li><a href="/zinas" data-page="zinas">Ziņas</a></li>
-      <li><a href="/macibas" data-page="macibas">Mācībām</a></li>
-      <li><a href="/darbinieki" data-page="darbinieki">Darbinieki</a></li>
-      <li><a href="/skoleniem" data-page="skoleniem">Skolēniem</a></li>
+      <li><button onclick="Display('Sidebar')"><i class="fa-solid fa-list"></i><p>Saturs</p></button></li>
+      <li><button onclick="Top()" id="Top"><i class="fa-solid fa-up-long"></i><p>Uz augšu</p></button></li>
+      <li><button onclick="Display('menu')"><i class="fa-solid fa-bars"></i><p>Sadaļas</p></button></li>
     </ul>
   </nav>
-  <div id="Content">
-    <aside>
-      <nav>
-        <ul id="Sidebar-list">
-        </ul>
-      </nav>
-    </aside>
-    <main>
-      <% pages.forEach(page => { %>
-        <h1 id="<%= page.Title.replace(" ", "_")%>"><%= page.Title%></h1>
-        <article>
-          <%- page.Text %>
-        </article>
-        <hr>
+  <nav id="menu">
+    <div id="logo">
+      <img src="/public/files/images/logo.webp" alt="logo">
+    </div>
+    <ul>
+      <% routes.forEach((route) =>{ %>
+        <li><a href="/<%= route.Name %>"><%= route.Name %></a></li>
       <% }) %>
-    </main>
-  </div>
-  <a href="#Logo" id="Up" class="fa-solid fa-circle-up"></a>
-  <footer class="grid">
-    <div>
-      <h3>Autortiesības</h3>
-      <p>&copy; 2024</p>
-    </div>
-    <div>
-      <h3>Kontakt informācija</h3>
-      <p><i class="fa fa-envelope"></i> jvg@edu.jekabpils.lv</p>
-      <p><i class="fa fa-phone"></i> +371 65237551</p>
-      <a target="_blank" href="https://maps.app.goo.gl/1eHQD7EJnqK95EgXA"><i class="fa fa-map-marker"></i> Rūdolfa Blaumaņa iela 27, Jēkabpils, Jēkabpils novads, LV-5201</a>
-    </div>
-    <div>
-      <h3>Sociālie mēdiji</h3>
-      <a style="font-size: 30px; padding: 5px;" target="_blank" href="https://www.facebook.com/jekabpilsvg/" class="fa-brands fa-facebook"></a>
-      <a style="font-size: 30px; padding: 5px;" target="_blank" href="https://twitter.com/JekabpilsVG" class="fa-brands fa-twitter"></a>
-      <a style="font-size: 30px; padding: 5px;" target="_blank" href="https://www.instagram.com/jvg_parlaments/" class="fa-brands fa-instagram"></a>
-    </div>
-  </footer>
+    </ul>
+  </nav>
+  <aside id="Sidebar">
+    <nav>
+      <ul id="Sidebar-list">
+      </ul>
+    </nav>
+  </aside>
+  <main>
+      <%- content%>
+      <footer class="line">
+        <div>
+          <h3 class="muted">Autortiesības</h3>
+          <p>&copy; 2024 Benedikts</p>
+        </div>
+        <div>
+          <h3 class="muted">Kontakt informācija</h3>
+          <p><i class="fa fa-envelope"></i> jvg@edu.jekabpils.lv</p>
+          <p><i class="fa fa-phone"></i> +371 65237551</p>
+          <a target="_blank" href="https://maps.app.goo.gl/1eHQD7EJnqK95EgXA"><i class="fa fa-map-marker"></i> Rūdolfa Blaumaņa iela 27, Jēkabpils, Jēkabpils novads, LV-5201</a>
+        </div>
+        <div>
+          <h3 class="muted">Sociālie mēdiji</h3>
+          <a style="font-size: 30px; padding: 5px;" target="_blank" href="https://www.facebook.com/jekabpilsvg/" class="fa-brands fa-facebook"></a>
+          <a style="font-size: 30px; padding: 5px;" target="_blank" href="https://twitter.com/JekabpilsVG" class="fa-brands fa-twitter"></a>
+          <a style="font-size: 30px; padding: 5px;" target="_blank" href="https://www.instagram.com/jvg_parlaments/" class="fa-brands fa-instagram"></a>
+        </div>
+      </footer>
+  </main>
+  <script>
+      function Display(id){
+          
+          // Show the clicked element
+          let element = document.getElementById(id);
+          element.style.display = 'flex';
+          
+          // Toggle active class
+          element.classList.toggle('active');
+      }
+  </script>
 </body>
 </html>

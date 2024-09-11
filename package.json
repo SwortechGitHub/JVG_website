@@ -21,6 +21,7 @@
     "@fastify/formbody": "^7.4.0",
     "@fastify/secure-session": "^7.5.1",
     "@fastify/static": "^7.0.4",
+    "@fastify/view": "^7.0.0",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",

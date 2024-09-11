@@ -1,31 +1,31 @@
-/* Phone version burger icon*/
-const PhoneMenu = () => {
-	document.getElementById("Menu").classList.toggle("active");
-	// Change the icon class
-	const PhoneMenuElement = document.getElementById("PhoneMenu");
-	if (PhoneMenuElement.classList.contains("fa-bars")) {
-		PhoneMenuElement.classList.remove("fa-bars");
-		PhoneMenuElement.classList.add("fa-x");
-	} else {
-		PhoneMenuElement.classList.remove("fa-x");
-		PhoneMenuElement.classList.add("fa-bars");
-	}
-};
+// /* Phone version burger icon*/
+// const PhoneMenu = () => {
+// 	document.getElementById("Menu").classList.toggle("active");
+// 	// Change the icon class
+// 	const PhoneMenuElement = document.getElementById("PhoneMenu");
+// 	if (PhoneMenuElement.classList.contains("fa-bars")) {
+// 		PhoneMenuElement.classList.remove("fa-bars");
+// 		PhoneMenuElement.classList.add("fa-x");
+// 	} else {
+// 		PhoneMenuElement.classList.remove("fa-x");
+// 		PhoneMenuElement.classList.add("fa-bars");
+// 	}
+// };
 
 /*Sidebar generator*/
 document.addEventListener("DOMContentLoaded", function () {
 	const ul = document.getElementById("Sidebar-list");
-	const h1Elements = document.querySelectorAll("main h1");
+	const titleElements = document.querySelectorAll("section .title");
 
-	h1Elements.forEach((h1, index) => {
+	titleElements.forEach((title, index) => {
 		const li = document.createElement("li");
-		if (index === h1Elements.length - 1) {
+		if (index === titleElements.length - 1) {
 			li.className = "last";
 		}
-		li.textContent = h1.textContent;
+		li.textContent = title.textContent;
 
 		const a = document.createElement("a");
-		a.href = `#${h1.id}`;
+		a.href = `#${title.id}`;
 		a.appendChild(li);
 
 		ul.appendChild(a);
@@ -50,17 +50,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
 /*highligth*/
 document.addEventListener("DOMContentLoaded", function () {
-	const articles = document.querySelectorAll("main h1");
+	const sections = document.querySelectorAll("main section");
 	const links = document.querySelectorAll("#Sidebar-list a");
 
-	if (articles.length === 0 || links.length === 0) {
-		console.error("No articles or links found. Check your selectors.");
+	if (sections.length === 0 || links.length === 0) {
+		console.error(
+			`No sections or links found. Check your selectors. ${sections.length}, ${links.length}`,
+		);
 		return;
 	}
 
 	window.addEventListener("scroll", function () {
 		let current = "";
-		articles.forEach((section) => {
+		sections.forEach((section) => {
 			const sectionTop = section.offsetTop;
 			if (window.pageYOffset >= sectionTop - 80) {
 				// Adjust 10 to account for small differences
@@ -76,3 +78,6 @@ document.addEventListener("DOMContentLoaded", function () {
 		});
 	});
 });
+function Top() {
+	location.href = "#top";
+}

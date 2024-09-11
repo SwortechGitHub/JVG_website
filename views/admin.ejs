@@ -1,36 +1,309 @@
 <!DOCTYPE html>
-<html lang="lv" data-theme="light">
+<html lang="lv">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <link rel="icon" type="image/x-icon" href="/public/files/images/logo.webp">
   <link rel="apple-touch-icon" href="/public/files/images/logo.webp">
-  <title>WebTools</title>
-  <script src="https://kit.fontawesome.com/74e30751de.js" crossorigin="anonymous"></script>
-  <script src="/public/plugins/ckeditor/ckeditor.js"></script>
-  <!-- Pico CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
-  <!--CSS-->
+  <title><%= pageTitle%></title>
+  <!--Font-->
+  <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+  <!-- CSS -->
   <link rel="stylesheet" href="/public/css/color.css">
-  <link rel="stylesheet" href="/public/css/admin.css">
+  <link rel="stylesheet" href="/public/css/main.css">
+  <!-- JS -->
+  <script defer src="/public/js/smooth.js"></script>
+  <script defer src="/public/js/devTools.js"></script>
+  <script defer src="/public/js/smooth.js"></script>
+  <script defer src="/public/js/index.js"></script>
+  <!-- Icons -->
+  <script src="https://kit.fontawesome.com/74e30751de.js" crossorigin="anonymous"></script>
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!--Sortable-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
 </head>
 <body>
-<nav>
-  <ul>
-    <li><a href="/a01d92m83i74n65/dashboard">Dashboard</a></li>
-    <li><a href="/a01d92m83i74n65/blogs">Blogi</a></li>
-    <li><a href="/a01d92m83i74n65/pages">Lapas</a></li>
-    <li><a href="#Folders">Folders</a></li>
-    <li><a href="/a01d92m83i74n65/users">Lietotāji</a></li>
-  </ul>
-  <ul>
-    <li>
-      <form action="/logout" method="post">
-        <input id="Logout" type="submit" name="logout" value="Logout" />
-      </form>
-    </li>
-  </ul>
+  <style>
+    #devTools{
+        height: 50px;
+        position: fixed;
+        display: flex;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        padding-left: 1em;
+        background-color: hsl(0, 0%, 15%);
+        box-shadow: none!important;
+        border-bottom: 2px solid black;
+        select{
+            height: 80%;
+            margin: auto 1em;
+        }
+        button{
+            margin: auto 0;
+            height: 60%!important;
+            border-radius: 5px;
+        }
+    }
+    .layout{
+        border: 2px solid hsl(from var(--text) h s l / 10%);
+        border-radius: 10px;
+        h2, h3, h4, p{
+          border: 2px solid hsl(from var(--text) h s l / 10%);
+          border-style: dotted;
+          &:hover{
+              cursor: pointer;
+          }
+          &[contenteditable="true"]{
+              cursor: auto;
+          }
+        }
+        &:hover{
+          cursor: grab;
+        }
+    }
+    .editable:empty::before {
+        content: "\00a0"; /* Non-breaking space */
+        display: inline-block;
+    }
+
+    .grabbing * {
+      cursor: grabbing !important;
+      user-select: none;
+      }
+      #trash-bin{
+          color:white;
+          background-color: red;
+          width: 100%; height: 100%;
+          position: absolute;left: 0;
+          display: none;
+          line-height: 50px;
+          padding-left: 1em;
+      }
+    #menu{
+        top: 55px;
+        height: fit-content;
+        & > div{
+            display: none;
+        }
+    }
+  </style>
+  <style>
+    #layout-selector {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    width: 300px;
+    box-sizing: border-box;
+}
+
+#add-layout{
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-bottom: 15px;
+    transition: background-color 0.3s ease;
+}
+
+#add-layout:hover {
+    background-color: #0056b3;
+}
+
+#devTools div:not(#trash-bin) {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+#devTools p {
+    margin: 0;
+    margin-right: 10px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+#devTools input[type="text"] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#devTools button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 100%;
+    transition: background-color 0.3s ease;
+}
+
+#devTools button:hover {
+    background-color: #218838;
+}
+
+#devTools form button {
+    background-color: #dc3545;
+    color: white;
+    margin: 10px;
+    font-size: 14px;
+}
+
+#devTools form button:hover {
+    background-color: #c82333;
+}
+#routeName{
+    padding: 8px;
+    font-size: 16px;
+    border: 2px solid #ccc;
+    color: white;
+    border-radius: 4px;
+    width: 200px;
+    margin-right: 10px;
+    box-sizing: border-box;
+}
+
+#routeAdd {
+    padding: 8px 12px;
+    height: 40px;
+    width: 40px;
+    margin-top: 5px;
+    font-size: 16px;
+    background-color: #28a745;
+    color: white;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#routeAdd:hover {
+    background-color: #218838;
+}
+  </style>
+  <nav>
+      <ul>
+          <li><button onclick="Display('Sidebar')"><i class="fa-solid fa-list"></i><p>Saturs</p></button></li>
+          <li><button onclick="Top()" id="Top"><i class="fa-solid fa-up-long"></i><p>Uz augšu</p></button></li>
+          <li><button onclick="Display('menu')"><i class="fa-solid fa-bars"></i><p>Sadaļas</p></button></li>
+      </ul>
+  </nav>
+  <nav id="devTools" style="display: flex;">
+    <select id="layout-selector">
+        <option value="Big title">Liels virsraksts</option>
+        <option value="Two texts">Divi teksti</option>
+        <option value="Side image">Sāna bilde</option>
+    </select>
+    <button id="add-layout" onclick="addLayout()">Pievienot sadaļu</button>
+    <div style="margin: 0; padding: 10px;"><p>Virsraksts</p><input type="text" id="title" value="<%= pageTitle%>"></div>
+    <button onclick="saveHTML()">Saglabāt</button>
+    <div id="trash-bin">Izmest ārā</div>
+    <form method="POST" action="/logout"><button type="submit">Logout</button></form>
 </nav>
-<%- include(content)%>
+  <nav id="menu">
+    <div>
+        <img src="/public/files/images/logo.webp" alt="logo">
+    </div>
+    <ul>
+    <% routes.forEach((route) =>{ %>
+        <li><a href="/admin/<%= route.Name %>"><%= route.Name %></a><button id="<%= route._id %>" onclick="routeDelete(this)">Delete</button></li>
+        <% }) %>
+        <li style="width: 200px; display: flex;"><input style="width: 150px;" type="text" id="routeName"><button id="routeAdd" onclick="routeAdd()">+</button></li>
+    </ul>
+  </nav>
+  <aside id="Sidebar">
+      <nav>
+          <ul id="Sidebar-list">
+          </ul>
+      </nav>
+  </aside>
+  
+  <main style="margin-top: 80px;">
+      <%- content%>
+  </main>
+  <div id="stylingOptions" style="z-index: 5;display: none;border-radius: 5px; position: absolute; background: #fff; border: 1px solid #000; padding: 5px;">
+      <button id="boldBtn"><b>B</b></button>
+      <button id="italicBtn"><i>I</i></button>
+      <button id="underlineBtn"><u>U</u></button>
+  </div>
+  <!-- Image Change Dialog -->
+  <div id="imageDialog" class="modal" style="display:none;">
+      <div class="modal-content">
+      <span class="close-btn" onclick="closeDialog()">&times;</span>
+      <h2>Change Image</h2>
+      
+      <div>
+          <label>Use Image Link:</label>
+          <input type="text" id="imageUrlInput" placeholder="Paste image URL here">
+          <button onclick="applyImageUrl()">Use this URL</button>
+      </div>
+      
+      <div>
+          <h3>Or Choose from Below:</h3>
+          <div class="image-gallery">
+          <!-- Predefined images gallery -->
+          <img src="https://jvg.edu.lv/media/2163/SKOLAVE4.JPG" onclick="selectGalleryImage(`https://jvg.edu.lv/media/2163/SKOLAVE4.JPG`)">
+          <img src="https://jvg.edu.lv/media/2158/SKOLAVE2.JPG" onclick="selectGalleryImage(`https://jvg.edu.lv/media/2158/SKOLAVE2.JPG`)">
+          </div>
+      </div>
+      </div>
+      <style>
+          /* Hide the Quill text editor by default */
+          .modal {
+          display: none;
+          position: fixed;
+          z-index: 100;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.5);
+          }
+
+          .modal-content {
+          background-color: #fff;
+          margin: 10% auto;
+          padding: 20px;
+          width: 80%;
+          max-width: 400px;
+          }
+
+          .close-btn {
+          cursor: pointer;
+          float: right;
+          }
+
+          .image-gallery img {
+          width: 100px;
+          height: auto;
+          margin: 10px;
+          cursor: pointer;
+          }
+
+      </style>
+  </div>
+  <script>
+      function Display(id){
+          // Hide both elements
+          document.getElementById("Sidebar").style.display = 'none';
+          document.getElementById("menu").style.display = 'none';
+          
+          // Show the clicked element
+          let element = document.getElementById(id);
+          element.style.display = 'block';
+          
+          // Toggle active class
+          element.classList.toggle('active');
+      }
+  </script>
 </body>
 </html>

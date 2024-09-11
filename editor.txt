@@ -1,0 +1,23 @@
+.center
+text aligns centers all text elements( h1, h2, h3, h4, p, a, blockquote, i, b)
+
+**elements in .center
+centers in container (blockquote)
+
+**elements in .v-center
+vetically center all elements
+
+.right
+text aligns right all text elements( h1, h2, h3, h4, p, a, blockquote, i, b)
+
+.muted
+mutes text elements ( h1, h2, h3, h4, p, a, blockquote, i, b)
+
+**elements in .line
+groups in line if can(div, blockqoute, a)
+
+!!!! img has to be in a always !!!!
+
+section .bg-primary and .bg-secondary
+Changes background color and text color
+

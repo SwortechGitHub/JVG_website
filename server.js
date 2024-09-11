@@ -8,11 +8,11 @@ const fastifyStatic = require("@fastify/static");
 const fastifyFormbody = require("@fastify/formbody");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const fs = require("fs");
 
-// Import the mongodb models
+// Import the MongoDB models
 const Users = require("./schemas/user");
-const Blogs = require("./schemas/blog");
-const Pages = require("./schemas/page");
+const Routes = require("./schemas/routes");
 
 // Middleware
 const isAuthorized = require("./middleware/authorization");
@@ -22,55 +22,25 @@ const isAuthenticated = require("./middleware/authentication");
 let serverStartTime = new Date();
 const NOT_FOUND_ROUTES_LIMIT = 30;
 let notFoundRoutes = [];
-const requestCounts = [
-	{title: "Home", oldviews: 0, views: 0, changes: 0, updated: ""},
-	{title: "Par skolu", oldviews: 0, views: 0, changes: 0, updated: ""},
-	{title: "Ziņas", oldviews: 0, views: 0, changes: 0, updated: ""},
-	{title: "Mācības", oldviews: 0, views: 0, changes: 0, updated: ""},
-	{title: "Darbinieki", oldviews: 0, views: 0, changes: 0, updated: ""},
-	{title: "Skolēniem", oldviews: 0, views: 0, changes: 0, updated: ""},
-];
 
 // Connect to MongoDB database
-mongoose
-	.connect(process.env.MONGODB_URI)
-	.then(() => {
-		console.log("Connected to MongoDB");
-	})
-	.catch((e) => {
-		console.error("Error connecting to MongoDB:", e);
-		process.exit(1); // Exit the process if unable to connect to MongoDB
-	});
+const connectWithRetry = () => {
+	mongoose
+		.connect(process.env.MONGODB_URI, {})
+		.then(() => console.log("\x1b[32m", "Connected to MongoDB", "\x1b[37m"))
+		.catch((err) => {
+			console.error(
+				"\x1b[31m",
+				"Failed to connect to MongoDB",
+				err,
+				"\x1b[37m",
+			);
+		});
+};
+connectWithRetry();
 
 // Initialize the cache
 const cache = new NodeCache();
-
-// Function to handle rendering and caching
-const renderAndCache = async (reply, cacheKey, Section) => {
-	const cachedHtml = cache.get(cacheKey);
-
-	if (cachedHtml) {
-		// Serve cached page
-		reply.type("text/html").send(cachedHtml);
-	} else {
-		try {
-			const pages = await Pages.find({Section}, "_id Order Title Text Type")
-				.sort({Order: 1})
-				.exec();
-			// Render page and cache it
-			ejs.renderFile("views/frame.ejs", {pages}, {}, (err, str) => {
-				if (err) {
-					reply.status(500).send(`Error rendering EJS: ${err}`);
-				} else {
-					cache.set(cacheKey, str);
-					reply.type("text/html").send(str);
-				}
-			});
-		} catch (err) {
-			reply.status(500).send(`Error fetching pages: ${err}`);
-		}
-	}
-};
 
 // Serve static files
 fastify.register(fastifyStatic, {
@@ -81,88 +51,78 @@ fastify.register(fastifyStatic, {
 // Register the formbody plugin to parse URL-encoded form data
 fastify.register(fastifyFormbody);
 
-// Function to update view counts
-function updateViewsCount(title) {
-	const page = requestCounts.find((page) => page.title === title);
-	if (page) {
-		page.views++;
-		// page.changes = views - oldViews;
-	}
-}
+// Helper function to render EJS templates
+const renderEJS = (templateName, data) => {
+	const templatePath = path.join(__dirname, "views", templateName);
+	return new Promise((resolve, reject) => {
+		ejs.renderFile(templatePath, data, {}, (err, str) => {
+			if (err) {
+				reject(err);
+			} else {
+				resolve(str);
+			}
+		});
+	});
+};
 
-//-------------------------------------------------------------------------------------Define routes
-fastify.get("/", (req, reply) => {
-	updateViewsCount("Home");
-	renderAndCache(reply, "Home", "Home");
+//---------------------------------------------------------------------------------------------Dynamic route
+
+// Define routes
+fastify.get("/", (request, reply) => {
+	reply.redirect("/Home");
 });
 
-fastify.get("/parskolu", (req, reply) => {
-	updateViewsCount("Par skolu");
-	renderAndCache(reply, "Par skolu", "Par skolu");
-});
+fastify.get("/:routeName", async (request, reply) => {
+	const routeName = request.params.routeName;
 
-fastify.get("/macibas", (req, reply) => {
-	updateViewsCount("Mācības");
-	renderAndCache(reply, "Mācības", "Mācības");
-});
+	console.log(routeName);
 
-fastify.get("/darbinieki", (req, reply) => {
-	updateViewsCount("Darbinieki");
-	renderAndCache(reply, "Darbinieki", "Darbinieki");
-});
+	// Check if the route is in cache
+	let routeData = cache.get(routeName);
 
-fastify.get("/skoleniem", (req, reply) => {
-	updateViewsCount("Skolēniem");
-	renderAndCache(reply, "Skolēniem", "Skolēniem");
-});
+	if (!routeData) {
+		// Fetch from MongoDB if not in cache
+		try {
+			routeData = await Routes.findOne({
+				Name: routeName,
+				IsActive: true,
+				IsDeleted: false,
+			}).lean();
 
-fastify.get("/zinas/:id?", async (req, reply) => {
-	updateViewsCount("Ziņas");
-	try {
-		const blogId = req.params.id;
-
-		if (blogId) {
-			// Fetch a specific blog by ID
-			const blog = await Blogs.findById(blogId).exec();
-			if (!blog) {
-				console.log("Blog not found");
-				return reply.status(404).send({message: "Blog not found"});
+			if (!routeData) {
+				return reply.code(404).send("Route not found");
 			}
 
-			// Render the blog content
-			ejs.renderFile("views/news_frame.ejs", {blog}, {}, (err, str) => {
-				if (err) {
-					reply.status(500).send(`Error rendering EJS: ${err}`);
-				} else {
-					reply.type("text/html").send(str);
-				}
-			});
-		} else {
-			try {
-				const blogs = await Blogs.find(
-					{Published: true},
-					"_id Title Date Type Author",
-				)
-					.sort({Date: -1})
-					.exec();
-				ejs.renderFile("views/news_frame.ejs", {blogs}, {}, (err, str) => {
-					if (err) {
-						reply.status(500).send(`Error rendering EJS: ${err}`);
-					} else {
-						reply.type("text/html").send(str);
-					}
-				});
-			} catch (err) {
-				console.error(err);
-				reply.status(500).type("application/json").send("");
-			}
+			// Store in cache
+			cache.set(routeName, routeData);
+		} catch (err) {
+			request.log.error(err);
+			return reply.code(500).send("An error occurred");
 		}
+	}
+
+	// Render the page using EJS
+	try {
+		const routes = await Routes.find(
+			{IsDeleted: false, IsActive: true},
+			{Name: 1, _id: 0},
+		);
+		const html = await renderEJS("frame.ejs", {
+			pageTitle: routeData.PageTitle,
+			content: routeData.HTML,
+			author: routeData.Author,
+			routes: routes,
+		});
+		reply.type("text/html").send(html);
 	} catch (err) {
-		console.error(err);
-		reply.status(500).send("Internal Server Error");
+		request.log.error(err);
+		reply.code(500).send("An error occurred while rendering the page");
 	}
 });
-//--------------------------------------------------------------------------------------Admin routes
+
+//---------------------------------------------------------------------------------------------Admin session
+
+// Admin routes
 const fastifySecureSession = require("@fastify/secure-session");
 
 // Define your session secret and options
@@ -173,333 +133,200 @@ fastify.register(fastifySecureSession, {
 	cookie: {
 		path: "/",
 		httpOnly: true,
-		secure: process.env.NODE_ENV === "production",
+		secure: process.env.NODE_ENV === "production", // Set secure cookies only in production
 	},
-	expiry: 5 * 60 * 60, // expire in 5 hours
+	expiry: 5 * 60 * 60, // Session expiry set to 5 hours
 	secret: sessionSecret,
-	saveUninitialized: false,
-	resave: false,
 });
 
-fastify.post("/logout", (req, reply) => {
-	req.session.user = null;
+fastify.post("/logout", (request, reply) => {
+	request.session.user = null;
 	reply.redirect("/");
 });
 
-fastify.get("/login", (req, reply) => {
-	ejs.renderFile("views/login.ejs", {}, {}, (err, str) => {
-		if (err) {
-			reply.status(500).send(`Error rendering EJS: ${err}`);
-		} else {
-			reply.type("text/html").send(str);
-		}
-	});
+fastify.get("/login", async (request, reply) => {
+	try {
+		const html = await renderEJS("login.ejs", {});
+		reply.type("text/html").send(html);
+	} catch (err) {
+		reply.status(500).send(`Error rendering EJS: ${err}`);
+	}
 });
 
-fastify.post("/login", async (req, reply) => {
-	const {username, password} = req.body;
+fastify.post("/login", async (request, reply) => {
+	const {username, password} = request.body;
 
 	try {
 		const user = await Users.findOne({username}).exec();
-		if (!user || !bcrypt.compare(password, user.password)) {
-			reply.status(401).send({error: "Invalid credentials"});
-			return;
+		if (!user) {
+			return reply.status(401).send({error: "Invalid credentials"});
 		}
 
-		req.session.user = user;
-		reply.redirect("/a01d92m83i74n65/dashboard");
+		const passwordMatch = await bcrypt.compare(password, user.password);
+		if (!passwordMatch) {
+			return reply.status(401).send({error: "Invalid credentials"});
+		}
+
+		request.session.user = {
+			id: user._id,
+			username: user.username,
+			role: user.role,
+		};
+		reply.redirect("/admin/Home");
 	} catch (err) {
 		console.error(err);
 		reply.status(500).send({error: "Internal Server Error"});
 	}
 });
+//---------------------------------------------------------------------------------------------Admin routes
 
 fastify.get(
-	"/a01d92m83i74n65/dashboard",
+	"/admin/:routeName",
 	{preHandler: isAuthenticated},
-	(req, reply) => {
-		ejs.renderFile(
-			"views/admin.ejs",
-			{
-				content: "admin/dashboard",
-				ServerUpdateDate: serverStartTime,
-				errors: notFoundRoutes,
-				pages: requestCounts,
-			},
-			{},
-			(err, str) => {
-				if (err) {
-					reply.status(500).send(`Error rendering EJS: ${err}`);
-				} else {
-					reply.type("text/html").send(str);
-				}
-			},
-		);
-	},
-);
+	async (request, reply) => {
+		const routeName = request.params.routeName;
 
-fastify.get(
-	"/a01d92m83i74n65/blogs",
-	{preHandler: isAuthenticated},
-	async (req, reply) => {
+		console.log(routeName);
+
 		try {
-			const blogs = await Blogs.find({}, "_id Title Published Date Type Author")
-				.sort({Date: -1})
-				.exec();
-			const groupedByType = blogs.reduce((acc, blog) => {
-				(acc[blog.Type] = acc[blog.Type] || []).push(blog);
-				return acc;
-			}, {});
-			ejs.renderFile(
-				"views/admin.ejs",
-				{
-					content: "admin/blogs",
-					groupedByType,
-				},
-				{},
-				(err, str) => {
-					if (err) {
-						reply.status(500).send(`Error rendering EJS: ${err}`);
-					} else {
-						reply.type("text/html").send(str);
-					}
-				},
-			);
+			routeData = await Routes.findOne({
+				Name: routeName,
+				IsActive: true,
+				IsDeleted: false,
+			}).lean();
+
+			if (!routeData) {
+				return reply.code(404).send("Route not found");
+			}
 		} catch (err) {
-			console.error(err);
-			reply.status(500).send("Internal Server Error");
+			request.log.error(err);
+			return reply.code(500).send("An error occurred");
 		}
-	},
-);
 
-fastify.get(
-	"/a01d92m83i74n65/pages",
-	{preHandler: isAuthenticated},
-	async (req, reply) => {
+		// Render the page using EJS
 		try {
-			const pages = await Pages.find(
-				{},
-				"_id Section Order Title Type Date Author",
-			)
-				.sort({Order: 1})
-				.exec();
-			const groupedPages = pages.reduce((acc, page) => {
-				if (!acc[page.Section]) {
-					acc[page.Section] = [];
-				}
-				acc[page.Section].push(page);
-				return acc;
-			}, {});
-			ejs.renderFile(
-				"views/admin.ejs",
-				{
-					content: "admin/pages",
-					groupedPages,
-				},
-				{},
-				(err, str) => {
-					if (err) {
-						reply.status(500).send(`Error rendering EJS: ${err}`);
-					} else {
-						reply.type("text/html").send(str);
-					}
-				},
-			);
-		} catch (err) {
-			console.error(err);
-			reply.status(500).send("Internal Server Error");
-		}
-	},
-);
-
-fastify.get(
-	"/a01d92m83i74n65/users",
-	{preHandler: isAuthenticated},
-	async (req, reply) => {
-		try {
-			const users = await Users.find();
-			const groupedUsers = users.reduce((acc, user) => {
-				(acc[user.role] = acc[user.role] || []).push(user);
-				return acc;
-			}, {});
-			ejs.renderFile(
-				"views/admin.ejs",
-				{
-					content: "admin/users",
-					groupedUsers,
-				},
-				{},
-				(err, str) => {
-					if (err) {
-						reply.status(500).send(`Error rendering EJS: ${err}`);
-					} else {
-						reply.type("text/html").send(str);
-					}
-				},
-			);
-		} catch (err) {
-			console.error(err);
-			reply.status(500).send("Internal Server Error");
-		}
-	},
-);
-
-// Handle form submission
-fastify.post("/a01d92m83i74n65/submit-blog", {
-	preHandler: isAuthorized(["canMakeBlogs"]),
-	handler: async (req, reply) => {
-		const {Title, Type, EDate, Date, Image, Content, Publish} = req.body;
-		const blog = new Blogs({
-			Title: Title,
-			Img: Image || "/public/files/images/none.webp",
-			Text: Content,
-			Published: Publish === "on",
-			EventDate: EDate,
-			Date: Date,
-			Type: Type,
-			Author: req.session.user.username,
-		});
-		try {
-			console.log("save");
-			await blog.save();
-			reply.send({success: true, message: "Form data received"});
-		} catch (err) {
-			console.error(err);
-			reply.status(500).send({error: "Failed to save blog"});
-		}
-	},
-});
-
-fastify.post("/a01d92m83i74n65/submit-page", {
-	preHandler: isAuthorized(["canMakePages"]),
-	handler: async (req, reply) => {
-		const {Title, Section, Type, Image, Content} = req.body;
-		try {
-			const count = await Pages.countDocuments({Section});
-			const order = count + 1;
-			const page = new Pages({
-				Title: Title,
-				Section: Section,
-				Type: Type,
-				Order: order,
-				Img: Image || "/public/files/images/none.webp",
-				Text: Content,
-				Author: req.session.user.username,
+			const routes = await Routes.find({IsDeleted: false}, {Name: 1, _id: 1});
+			const html = await renderEJS("admin.ejs", {
+				pageTitle: routeData.PageTitle,
+				content: routeData.HTML,
+				author: routeData.Author,
+				routes: routes,
 			});
-			await page.save();
-			cache.del(Section);
-			reply.send({success: true, message: "Form data received"});
+			reply.type("text/html").send(html);
 		} catch (err) {
-			console.error(err);
-			reply.status(500).send({error: "Failed to save page"});
+			request.log.error(err);
+			reply.code(500).send("An error occurred while rendering the page");
 		}
 	},
-});
+);
+fastify.post(
+	"/save-html",
+	{preHandler: isAuthenticated},
+	async (request, reply) => {
+		const {pageTitle, routeName, content} = request.body;
 
-fastify.post("/a01d92m83i74n65/submit-user", {
-	preHandler: isAuthorized(["canMakeUsers"]),
-	handler: async (request, reply) => {
-		try {
-			const newUser = new Users(request.body);
-			await newUser.save();
-			reply.send({success: true, message: "Form data received"});
-		} catch (err) {
-			reply.status(500).send({status: "error", message: err.message});
+		if (!routeName) {
+			return reply.code(400).send({error: "Missing required fields"});
 		}
-	},
-});
 
-// Blogs API
-fastify.post("/a01d92m83i74n65/api/publishBlog", {
-	preHandler: isAuthorized(["canPublishBlogs"]),
-	handler: async (req, reply) => {
-		const {id, bool} = req.body;
 		try {
-			const blog = await Blogs.findByIdAndUpdate(
-				id,
-				{Published: !bool},
-				{new: true},
-			).exec();
-			if (!blog) {
-				return reply.status(404).send({message: "Blog not found"});
+			// Find if the route already exists, if so, update it
+			let route = await Routes.findOne({Name: routeName});
+
+			if (route) {
+				if (!content) {
+					return reply.code(400).send({error: "Missing required fields"});
+				}
+
+				// Update the existing route
+				route.PageTitle = pageTitle;
+				route.HTML = content;
+				route.Author = request.session.user.username;
+				await route.save();
+			} else {
+				return reply.code(400).send({error: "Route not found"});
 			}
-			reply.send({message: "Blog published successfully", bool: !bool});
-		} catch (err) {
-			console.error(err);
-			reply.status(500).send({message: "Internal Server Error"});
+
+			// Clear cache for the updated route
+			cache.del(routeName);
+
+			// Optionally re-cache the updated content
+			cache.set(routeName, route);
+
+			// Send a success response
+			reply.send({
+				success: true,
+				message: "Content saved and cache cleared successfully",
+			});
+		} catch (error) {
+			console.error("Error saving content:", error);
+			reply.code(500).send({error: "Failed to save content"});
 		}
 	},
-});
+);
+fastify.post(
+	"/add-route",
+	{preHandler: isAuthenticated},
+	async (request, reply) => {
+		const {routeName} = request.body;
 
-fastify.post("/a01d92m83i74n65/api/deleteBlog", {
-	preHandler: isAuthorized(["canDeleteBlogs"]),
-	handler: async (req, reply) => {
-		const {id} = req.body;
+		// Validate required fields
+		if (!routeName) {
+			return reply.code(400).send({error: "Missing required field: routeName"});
+		}
+
 		try {
-			const blog = await Blogs.findByIdAndDelete(id).exec();
-			if (!blog) {
-				return reply.status(404).send({message: "Blog not found"});
+			// Check if the route already exists
+			let existingRoute = await Routes.findOne({Name: routeName});
+
+			if (existingRoute) {
+				return reply.code(409).send({error: "Route already exists"});
 			}
-			reply.send({message: "Blog deleted successfully"});
-		} catch (err) {
-			console.error(err);
-			reply.status(500).send({message: "Internal Server Error"});
+
+			// Create a new route
+			const newRoute = new Routes({
+				PageTitle: " ",
+				Name: routeName,
+				Author: request.session.user.username,
+			});
+			await newRoute.save();
+
+			// Send success response
+			return reply.send({
+				success: true,
+				message: "New route created successfully",
+			});
+		} catch (error) {
+			console.error("Error creating route:", error);
+			return reply.code(500).send({error: "Failed to create route"});
 		}
 	},
-});
+);
+fastify.post(
+	"/delete-route",
+	{preHandler: isAuthenticated},
+	async (req, reply) => {
+		const {routeId} = req.body;
 
-fastify.post("/a01d92m83i74n65/api/getBlog", {
-	preHandler: isAuthorized(["canEditBlogs"]),
-	handler: async (req, reply) => {
-		const {id} = req.body;
+		if (!routeId) {
+			return reply.code(400).send({error: "Missing required field: routeId"});
+		}
+
 		try {
-			const blog = await Blogs.findById(
-				id,
-				"Title Type EventDate Date Img Text Published",
-			).exec();
-			if (!blog) {
-				return reply.status(404).send({message: "Blog not found"});
-			}
-			reply.status(200).send(blog);
-		} catch (err) {
-			console.error(err);
-			reply.status(500).send({message: "Internal Server Error"});
+			let Route = await Routes.findOne({_id: routeId});
+			Route.IsDeleted = true;
+			await Route.save();
+		} catch (error) {
+			console.error("Error deleting route:", error);
+			return reply.code(500).send({error: "Failed to delete route"});
 		}
 	},
-});
+);
 
-fastify.post("/a01d92m83i74n65/api/updateBlog", {
-	preHandler: isAuthorized(["canEditBlogs"]),
-	handler: async (req, reply) => {
-		const {id, Title, Type, EDate, Date, Image, Content, Publish} = req.body;
-		try {
-			const blog = await Blogs.findByIdAndUpdate(
-				id,
-				{
-					Title: Title,
-					Img: Image,
-					Text: Content,
-					Published: Publish === "on",
-					EventDate: EDate,
-					Date: Date,
-					Type: Type,
-					Author: req.session.user.username,
-				},
-				{new: false},
-			).exec();
-			if (!blog) {
-				return reply.status(404).send({message: "Blog not found"});
-			}
-			reply.send({message: "Blog updated successfully"});
-		} catch (err) {
-			console.error(err);
-			reply.status(500).send({message: "Internal Server Error"});
-		}
-	},
-});
+//---------------------------------------------------------------------------------------------Page not found
 
-// Catch-all route for 404
-fastify.get("*", (req, reply) => {
+// 404 Route
+fastify.get("/404", (req, reply) => {
 	const routePath = req.url;
 	if (!notFoundRoutes.includes(routePath)) {
 		notFoundRoutes.push(routePath);
@@ -507,26 +334,83 @@ fastify.get("*", (req, reply) => {
 			notFoundRoutes.shift(); // Remove the oldest entry
 		}
 	}
-	const pages = [
-		{
-			Title: "404",
-			Text: "<style>aside{display: none;}</style><p>Ierakstītā adrese ir nepareiza. Ja adrese kādreiz bija pareiza, tad neuztraucies, jo adminstrātors ir ziņots.</p>",
-		},
-	];
-	ejs.renderFile("views/frame.ejs", {pages}, {}, (err, str) => {
-		if (err) {
-			reply.status(500).send(`Error rendering EJS: ${err}`);
-		} else {
-			reply.type("text/html").send(str);
-		}
-	});
+	renderEJS("frame.ejs", {
+		pageTitle: "404",
+		content:
+			"<style>aside{display: none;}</style><p>The URL entered is incorrect. If it was once correct, don't worry, the admin has been notified.</p>",
+		author: "Dev",
+	})
+		.then((html) => reply.type("text/html").send(html))
+		.catch((err) => reply.status(500).send(`Error rendering EJS: ${err}`));
 });
+
+//---------------------------------------------------------------------------------------------Close server
+
+// Graceful shutdown
+const gracefulShutdown = async () => {
+	try {
+		console.log("\x1b[33m", "Initiating graceful shutdown...", "\x1b[37m");
+
+		// Timeout to force shutdown if it takes too long
+		const timeout = 5000; // 5 seconds
+		const timeoutPromise = new Promise((resolve, reject) => {
+			setTimeout(
+				() => reject(new Error("\x1b[31m", "Shutdown timeout", "\x1b[37m")),
+				timeout,
+			);
+		});
+
+		// Close Fastify server
+		const fastifyClosePromise = fastify.close();
+
+		// Close MongoDB connection
+		const mongooseClosePromise = mongoose.connection.close();
+
+		await Promise.race([
+			fastifyClosePromise,
+			mongooseClosePromise,
+			timeoutPromise,
+		]);
+
+		console.log("\x1b[32m", "Graceful shutdown complete.", "\x1b[37m");
+		process.exit(0);
+	} catch (err) {
+		console.error(
+			"\x1b[31m",
+			"Error during graceful shutdown:",
+			err,
+			"\x1b[37m",
+		);
+		process.exit(1);
+	}
+};
+
+// Register signal handlers for graceful shutdown
+process.on("SIGINT", () => {
+	console.log(
+		"\x1b[33m",
+		"SIGINT signal received. Closing server...",
+		"\x1b[37m",
+	);
+	gracefulShutdown();
+});
+
+process.on("SIGTERM", () => {
+	console.log(
+		"\x1b[33m",
+		"SIGTERM signal received. Closing server...",
+		"\x1b[37m",
+	);
+	gracefulShutdown();
+});
+
+//---------------------------------------------------------------------------------------------Open server
 
 // Start the server
 const port = process.env.PORT || 3000;
 const start = async () => {
 	try {
-		fastify.listen({port: port, host: "0.0.0.0"}); // Ensure host is set to '0.0.0.0'
+		await fastify.listen({port: port, host: "0.0.0.0"}); // Ensure host is set to '0.0.0.0'
 		console.log(`Server listening on: http://localhost:${port}`);
 		console.log(`Server started at: ${serverStartTime}`);
 	} catch (err) {
