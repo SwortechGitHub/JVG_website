@@ -50,7 +50,7 @@
     .layout{
         border: 2px solid hsl(from var(--text) h s l / 10%);
         border-radius: 10px;
-        h2, h3, h4, p{
+        h2, h3, h4, p, .text{
           border: 2px solid hsl(from var(--text) h s l / 10%);
           border-style: dotted;
           &:hover{
@@ -88,6 +88,45 @@
         & > div{
             display: none;
         }
+    }
+    /* CSS */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 100;
+        left: 0;
+        top: 0;
+        width: 100vw;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal.show {
+        display: block;
+    }
+
+    .modal-content {
+        background-color: #fff;
+        margin: 10% auto;
+        padding: 20px;
+        width: 80%;
+        max-width: 800px;
+        border-radius: 10px;
+    }
+
+    .close-btn {
+        cursor: pointer;
+        float: right;
+    }
+
+    .image-gallery img {
+        width: 100px;
+        height: auto;
+        margin: 10px;
+        cursor: pointer;
+    }
+    img{
+        pointer-events: auto;
     }
   </style>
   <style>
@@ -189,6 +228,19 @@
 #routeAdd:hover {
     background-color: #218838;
 }
+#stylingOptions{
+    z-index: 5;
+    display: none;
+    border-radius: 5px;
+    position: absolute;
+    background: #fff;
+    border: 1px solid #000;
+    padding: 5px;
+    i{
+        color: #000;
+        font-size: 16px;
+    }
+}
   </style>
   <nav>
       <ul>
@@ -202,6 +254,7 @@
         <option value="Big title">Liels virsraksts</option>
         <option value="Two texts">Divi teksti</option>
         <option value="Side image">Sāna bilde</option>
+        <option value="Image and text">Attēls un teksts</option>
     </select>
     <button id="add-layout" onclick="addLayout()">Pievienot sadaļu</button>
     <div style="margin: 0; padding: 10px;"><p>Virsraksts</p><input type="text" id="title" value="<%= pageTitle%>"></div>
@@ -217,7 +270,7 @@
     <% routes.forEach((route) =>{ %>
         <li><a href="/admin/<%= route.Name %>"><%= route.Name %></a><button id="<%= route._id %>" onclick="routeDelete(this)">Delete</button></li>
         <% }) %>
-        <li style="width: 200px; display: flex;"><input style="width: 150px;" type="text" id="routeName"><button id="routeAdd" onclick="routeAdd()">+</button></li>
+        <li style="width: 200px; display: flex;"><input style="width: 150px; height: 40px; margin-top: 5px; background-color: var(--primary-background);" type="text" id="routeName"><button id="routeAdd" onclick="routeAdd()">+</button></li>
     </ul>
   </nav>
   <aside id="Sidebar">
@@ -226,70 +279,38 @@
           </ul>
       </nav>
   </aside>
-  
   <main style="margin-top: 80px;">
       <%- content%>
   </main>
-  <div id="stylingOptions" style="z-index: 5;display: none;border-radius: 5px; position: absolute; background: #fff; border: 1px solid #000; padding: 5px;">
+  <div id="stylingOptions">
       <button id="boldBtn"><b>B</b></button>
       <button id="italicBtn"><i>I</i></button>
       <button id="underlineBtn"><u>U</u></button>
+      <button id="linkBtn"><u style="color: var(--primary);">a</u></button>
+      <button id="alignLeftBtn"><i class="fa-solid fa-align-left"></i></button>
+      <button id="alignCenterBtn"><i class="fa-solid fa-align-center"></i></button>
+      <button id="alignRightBtn"><i class="fa-solid fa-align-right"></i></button>
   </div>
   <!-- Image Change Dialog -->
-  <div id="imageDialog" class="modal" style="display:none;">
-      <div class="modal-content">
+  <div id="imageDialog" class="modal">
+    <div class="modal-content">
       <span class="close-btn" onclick="closeDialog()">&times;</span>
-      <h2>Change Image</h2>
-      
+      <h2>Mainīt bildi</h2>
       <div>
-          <label>Use Image Link:</label>
-          <input type="text" id="imageUrlInput" placeholder="Paste image URL here">
-          <button onclick="applyImageUrl()">Use this URL</button>
-      </div>
-      
+        <label>Izmantot attēlam saiti:</label>
+        <input type="text" id="imageUrlInput" placeholder="Iekopē linku te">
+        <label for="altTextInput">Alt teksts:</label>
+        <input type="text" id="altTextInput" placeholder="Ieraksti alt tektu">
+        <button onclick="applyImageUrl()">Izmantot saiti</button>
+    </div>
       <div>
-          <h3>Or Choose from Below:</h3>
-          <div class="image-gallery">
-          <!-- Predefined images gallery -->
-          <img src="https://jvg.edu.lv/media/2163/SKOLAVE4.JPG" onclick="selectGalleryImage(`https://jvg.edu.lv/media/2163/SKOLAVE4.JPG`)">
-          <img src="https://jvg.edu.lv/media/2158/SKOLAVE2.JPG" onclick="selectGalleryImage(`https://jvg.edu.lv/media/2158/SKOLAVE2.JPG`)">
-          </div>
+        <h3>Vai izvēlies kādu no apakšas:</h3>
+        <div class="image-gallery">
+          <img src="https://jvg.edu.lv/media/2163/SKOLAVE4.JPG" onclick="selectGalleryImage('https://jvg.edu.lv/media/2163/SKOLAVE4.JPG')">
+          <img src="https://jvg.edu.lv/media/2158/SKOLAVE2.JPG" onclick="selectGalleryImage('https://jvg.edu.lv/media/2158/SKOLAVE2.JPG')">
+        </div>
       </div>
-      </div>
-      <style>
-          /* Hide the Quill text editor by default */
-          .modal {
-          display: none;
-          position: fixed;
-          z-index: 100;
-          left: 0;
-          top: 0;
-          width: 100%;
-          height: 100%;
-          background-color: rgba(0, 0, 0, 0.5);
-          }
-
-          .modal-content {
-          background-color: #fff;
-          margin: 10% auto;
-          padding: 20px;
-          width: 80%;
-          max-width: 400px;
-          }
-
-          .close-btn {
-          cursor: pointer;
-          float: right;
-          }
-
-          .image-gallery img {
-          width: 100px;
-          height: auto;
-          margin: 10px;
-          cursor: pointer;
-          }
-
-      </style>
+    </div>
   </div>
   <script>
       function Display(id){

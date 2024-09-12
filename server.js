@@ -186,8 +186,6 @@ fastify.get(
 	async (request, reply) => {
 		const routeName = request.params.routeName;
 
-		console.log(routeName);
-
 		try {
 			routeData = await Routes.findOne({
 				Name: routeName,
@@ -226,15 +224,16 @@ fastify.post(
 		const {pageTitle, routeName, content} = request.body;
 
 		if (!routeName) {
+			console.log("Route name is required");
 			return reply.code(400).send({error: "Missing required fields"});
 		}
 
 		try {
 			// Find if the route already exists, if so, update it
-			let route = await Routes.findOne({Name: routeName});
-
+			let route = await Routes.findOne({Name: decodeURIComponent(routeName)});
 			if (route) {
 				if (!content) {
+					console.log("Content is required");
 					return reply.code(400).send({error: "Missing required fields"});
 				}
 
@@ -244,6 +243,7 @@ fastify.post(
 				route.Author = request.session.user.username;
 				await route.save();
 			} else {
+				console.log("Route not found");
 				return reply.code(400).send({error: "Route not found"});
 			}
 

@@ -259,12 +259,15 @@ aside {
         }
         li{
             background-color: hsl(from var(--primary-background) h s calc( l + 10));
-            width: 110px;
+            min-width: 110px;
             height: 50px;
             &:hover a{
                color: var(--primary);
                font-weight: 600;
             }
+        }
+        li:last-of-type{
+            padding-right: 1em;
         }
         a{
             display: block;

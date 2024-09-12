@@ -3,37 +3,42 @@ const templates = {
       <section class="layout">
         <div class="center v-center">
           <h2 class="editable title">Title</h2>
-          <p class="editable">Text</p>
+          <div class="editable center text">Text</div>
         </div>
       </section>`,
+
 	"Two texts": `
       <section class="layout">
         <h2 class="center editable title">Title</h2>
         <div class="line">
           <div>
             <h4 class="center editable">Sub Title</h4>
-            <p class="editable">Text</p>
+            <div class="editable text">Text</div>
           </div>
           <div>
             <h4 class="center editable">Sub Title</h4>
-            <p class="editable">Text</p>
+            <div class="editable text">Text</div>
           </div>
         </div>
       </section>`,
+
 	"Side image": `
       <section class="layout line">
-        <img src="public/files/images/none.webp" class="center">
+        <div><img src="public/files/images/none.webp" class="center"></div>
         <div>
           <h2 class="editable title">Title</h2>
-          <p class="editable">Text</p>
+          <div class="editable text">Text</div>
         </div>
       </section>`,
-	"Big side image": `
-      <section class="layout line no-padding">
-        <img class="big" src="public/files/images/none.webp">
-        <div>
-          <h2 class="editable title">Title</h2>
-          <p class="editable">Text</p>
+
+	"Image and text": `
+      <section class="layout line">
+        <div class="center v-center">
+          <img src="public/files/images/none.webp" class="center">
+          <div class="editable">
+            <h3>Text with Image</h3>
+            <div class="text">Text</div>
+          </div>
         </div>
       </section>`,
 };
@@ -111,11 +116,14 @@ function initializeStylingOptions() {
 	const boldBtn = document.getElementById("boldBtn");
 	const italicBtn = document.getElementById("italicBtn");
 	const underlineBtn = document.getElementById("underlineBtn");
+	const linkBtn = document.getElementById("linkBtn");
+	const alignLeftBtn = document.getElementById("alignLeftBtn");
+	const alignCenterBtn = document.getElementById("alignCenterBtn");
+	const alignRightBtn = document.getElementById("alignRightBtn");
 
 	let activeEditable = null;
 
 	updateStylingOptions = function () {
-		// Assign function to global variable
 		const selection = window.getSelection();
 		if (selection.rangeCount === 0) return;
 
@@ -153,15 +161,28 @@ function initializeStylingOptions() {
 		}
 	});
 
+	// Apply text styling options
 	boldBtn.addEventListener("click", () => applyStyle("bold"));
 	italicBtn.addEventListener("click", () => applyStyle("italic"));
 	underlineBtn.addEventListener("click", () => applyStyle("underline"));
+	linkBtn.addEventListener("click", () => {
+		const url = prompt("Enter the URL");
+		if (url) {
+			applyStyle("createLink", url);
+		}
+	});
+
+	// Text alignment options
+	alignLeftBtn.addEventListener("click", () => applyStyle("justifyLeft"));
+	alignCenterBtn.addEventListener("click", () => applyStyle("justifyCenter"));
+	alignRightBtn.addEventListener("click", () => applyStyle("justifyRight"));
 
 	stylingOptions.addEventListener("mousedown", (e) => e.preventDefault());
 }
 
-function applyStyle(command) {
-	document.execCommand(command, false, null);
+// Modified applyStyle function to accept optional argument (e.g., URL for link creation)
+function applyStyle(command, value = null) {
+	document.execCommand(command, false, value);
 }
 
 function addLayout() {
@@ -200,11 +221,11 @@ const trashBin = new Sortable(document.getElementById("trash-bin"), {
 	},
 });
 
+// Images
 let selectedImageElement = null;
 
 function initializeImageClick() {
 	document.querySelectorAll("main img").forEach((image) => {
-		image.removeEventListener("click", handleImageClick);
 		image.addEventListener("click", handleImageClick);
 	});
 }
@@ -215,11 +236,11 @@ function handleImageClick() {
 }
 
 function showDialog() {
-	document.getElementById("imageDialog").style.display = "block";
+	document.getElementById("imageDialog").classList.add("show");
 }
 
 function closeDialog() {
-	document.getElementById("imageDialog").style.display = "none";
+	document.getElementById("imageDialog").classList.remove("show");
 }
 
 function applyImageUrl() {
@@ -233,6 +254,7 @@ function applyImageUrl() {
 function selectGalleryImage(imageSrc) {
 	if (selectedImageElement) {
 		selectedImageElement.src = imageSrc;
+		selectedImageElement.alt = document.getElementById("altTextInput").value;
 		closeDialog();
 	}
 }
@@ -272,7 +294,8 @@ async function saveHTML() {
 		if (response.ok) {
 			alert("Content saved successfully!");
 		} else {
-			alert("Failed to save content.");
+			const errorMessage = await response.json();
+			alert("Failed to save content.", errorMessage.error);
 		}
 	} catch (error) {
 		console.error("Error saving content:", error);
